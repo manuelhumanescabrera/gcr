@@ -1,0 +1,148 @@
+<div class="container-fluid">
+  <div class="page-header">
+    <h1>{{titulo}} {{num}}</h1>
+  </div>
+  <form #formSocioEdit="ngForm" (submit)="onSubmit()">
+    <div class="row">
+      <!-- Primera fila de datos -->
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label class="label label-primary" for="nombre">Nombre:</label>
+          <input class="form-control" name="nombre" type="text" #nombre [(ngModel)]="socio.nombre">
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label class="label label-primary" for="apellido1">1º Apellido:</label>
+          <input class="form-control" name="apellido1" type="text" #apellido1 [(ngModel)]="socio.apellido1">
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label class="label label-primary" for="apellido2">2º Apellido:</label>
+          <input class="form-control" name="apellido2" type="text" #apellido2 [(ngModel)]="socio.apellido2">
+        </div>
+      </div>
+      <!-- segunda fila de datos -->
+      <div class="col-lg-1">
+        <div class="form-group">
+          <label class="label label-primary" for="domiciliado">Domiciliado:</label>
+          <input [checked]="socio.domiciliado" name="domiciliado" #domiciliado class="form-check-input" type="checkbox">
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="form-group">
+          <label class="label label-primary" for="dni">DNI:</label>
+          <input class="form-control" name="dni" type="text" #dni [(ngModel)]="socio.dni">
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="form-group">
+          <label class="label label-primary" for="direccion">Dirección:</label>
+          <input class="form-control" name="direccion" type="text" #direccion [(ngModel)]="socio.direccion">
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="form-group">
+          <label class="label label-primary" for="cPostal">Cod. Postal:</label>
+          <input class="form-control" name="cPostal" type="text" #cPostal [(ngModel)]="socio.cPostal">
+        </div>
+      </div>
+      <!-- tercera fila -->
+      <div class="col-lg-3">
+        <div class="form-group">
+          <label class="label label-primary" for="localidad">Localidad:</label>
+          <input class="form-control" name="localidad" type="text" #localidad [(ngModel)]="socio.localidad">
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="form-group">
+          <label class="label label-primary" for="provincia">Provincia:</label>
+          <input class="form-control" name="provincia" type="text" #provincia [(ngModel)]="socio.provincia">
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="form-group">
+          <label class="label label-primary" for="fAlta">Alta:</label>
+          <owl-date-time #fAlta  [(ngModel)]="socio.fAlta" name="fAlta" [autoClose]="true" [type]="'calendar'" [dateFormat]="'YYYY-MM-DD'" [locale]="es" [placeHolder]="'yyyy-mm-dd'" [inputId]="'fAlta'"></owl-date-time>
+        </div>
+      </div>
+      <div class="col-lg-1">
+        <div class="form-group">
+          <label class="label label-primary" for="noActivo">No Activo:</label>
+          <input [checked]="socio.noActivo" name="noActivo" #noActivo class="form-check-input" type="checkbox">
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="form-group">
+          <label class="label label-primary" for="fBaja">Baja:</label>
+          <owl-date-time #fBaja name="fBaja" [(ngModel)]="socio.fBaja" [autoClose]="true" [type]="'calendar'" [dateFormat]="'YYYY-MM-DD'" [locale]="es" [placeHolder]="'yyyy-mm-dd'" [inputId]="'fBaja'"></owl-date-time>
+        </div>
+      </div>
+      <div class="col-lg-1">
+        <div class="form-group">
+          <label class="label label-primary" for="propiedad">Propiedad:</label>
+          <input class="form-control" name="propiedad" type="text" #propiedad [(ngModel)]="socio.propiedad">
+        </div>
+      </div>
+      <!-- Observaciones -->
+      <div class="col-lg-12">
+        <div class="form-group">
+          <label class="label label-primary" for="observaciones">Observaciones:</label>
+          <textarea class="form-control" name="observaciones" id="" cols="30" rows="5" #observaciones [(ngModel)]="socio.observaciones"></textarea>
+        </div>
+      </div>
+      <!-- Teléfonos, parcelas y demás -->
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label class="label label-primary">Teléfonos:</label>
+          <table class="table table-striped table-bordered">
+            <tr>
+              <th>Número</th>
+              <th>En uso</th>
+              <th *ngIf="bloqueo">
+                <button class="btn btn-success btn-xs" type="button" name="button" (click)="setTelefono()"><span class="glyphicon glyphicon-plus">Nuevo</span></button>
+              </th>
+            </tr>
+            <tr *ngFor="let telefono of socio.telefonos">
+              <td>{{telefono.telefono}}</td>
+              <td><input type="checkbox" [checked]="telefono.activo" class="form-check-input" name=""></td>
+              <td *ngIf="bloqueo">
+                <button class="btn btn-danger btn-xs" *ngIf="bloqueo" type="button" name="button" (click)="deleteTelefono($event)" value="{{telefono.id}}"><span class="glyphicon glyphicon-trash"></span></button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label class="label label-primary">Teléfonos:</label>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label class="label label-primary">Teléfonos:</label>
+        </div>
+      </div>
+      <!-- Botón de actualizar -->
+      <div class="col-lg-4" style="clear:both">
+        <div class="form-group">
+          <button type="button" name="editar" class="btn btn-warning btn-block" (click)="setDisabled()">Editar</button>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <input class="btn btn-success btn-block" type="submit" name="enviar" value="Enviar" [disabled]="!formSocioEdit.form.valid">
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <button type="button" name="editar" class="btn btn-primary btn-block" (click)="goSocios()">Volver</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+  <div class="modal">
+    <h1>shdkljhs</h1>
+  </div>

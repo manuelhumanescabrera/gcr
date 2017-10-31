@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="col-lg-4 col-lg-offset-2">
+    <h3>ACCESO AL PROGRAMA</h3>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+      <p>
+        <label class="label label-primary" for="email">Email:</label>
+        <input #email [(ngModel)]="user.email" class="form-control" type="email" name="email" placeholder="Email">
+      </p>
+      <p>
+        <label class="label label-primary" for="password">Contraseña:</label>
+        <input #password [(ngModel)]="user.password" class="form-control" type="password" name="password" placeholder="Contraseña">
+      </p>
+      <input class="btn btn-success btn-block" type="submit" name="entrar" value="Entrar">
+    </form>
+  </div>
+</div>
