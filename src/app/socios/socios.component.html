@@ -4,15 +4,18 @@
   </div>
   <div class="row">
     <div class="col-lg-4">
-      <div class="form-group">
+      <div class="form-group" [class.has-primary]="numero.valid && numero.touched" [class.has-error]="numero.invalid && (numero.dirty || numero.touched)">
         <label class="label label-primary" for="numero">Numero:</label>
-        <input class="form-control" name="numero" type="text" #numero [(ngModel)]="nombre.numero" (keyup)="buscarNumero($event)">
+        <input class="form-control" name="numero" type="text" #numero="ngModel" [(ngModel)]="nombre.numero" (keyup)="buscarNumero($event)" pattern="[\d]{1,3}">
+        <div *ngIf="numero.invalid && (numero.dirty || numero.touched)" class="control-label has-error">
+          Entre 1 y 3 numeros
+        </div>
       </div>
     </div>
     <div class="col-lg-8">
       <div class="form-group">
         <label class="label label-primary" for="nombre">Nombre:</label>
-        <input class="form-control" name="nombre" type="text" #nombre [(ngModel)]="nombre.nombre" (keyup)="buscarNombre($event)">
+        <input class="form-control" name="nombre" type="text" #nombre="ngModel" [(ngModel)]="nombre.nombre" (keyup)="buscarNombre($event)">
       </div>
     </div>
   </div>

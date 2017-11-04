@@ -49,16 +49,16 @@ export class SociosComponent implements OnInit {
 
   consultarSocio(evento) {
     let numero = evento.target.value;
-    this._router.navigate(['socios-det', numero, true]);
+    this._router.navigate(['socios-det', numero, 'ver']);
   }
   editarSocio(evento){
     let numero = evento.target.value;
-    this._router.navigate(['socios-det', numero, false]);
+    this._router.navigate(['socios-det', numero, 'editar']);
   }
   addSocio(){
     this._operaciones.getSocioSig().subscribe(res=>{
       let numero = JSON.parse(res.data);
-      this._router.navigate(['socios-det', numero['siguiente'], false]);
+      this._router.navigate(['socios-det', numero['siguiente'], 'nuevo']);
     }, err =>{
       console.log(<any>err);
     })

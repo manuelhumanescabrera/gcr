@@ -6,7 +6,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+//csv
+import { Ng2CsvModule } from 'ng2csv/Ng2Csv.module';
 
 
 import { AppComponent } from './app.component';
@@ -24,6 +25,9 @@ import { SociosComponent } from './socios/socios.component';
 import { SociosDetComponent } from './socios-det/socios-det.component';
 import { RecibosComponent } from './recibos/recibos.component';
 import { RecibosDetComponent } from './recibos-det/recibos-det.component';
+import { InicioComponent } from './inicio/inicio.component';
+import { ErrorComponent } from './error/error.component';
+import { RemesasComponent } from './remesas/remesas.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +39,10 @@ import { RecibosDetComponent } from './recibos-det/recibos-det.component';
     SociosComponent,
     SociosDetComponent,
     RecibosComponent,
-    RecibosDetComponent
+    RecibosDetComponent,
+    InicioComponent,
+    ErrorComponent,
+    RemesasComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +50,7 @@ import { RecibosDetComponent } from './recibos-det/recibos-det.component';
     HttpModule,
     BrowserAnimationsModule,
     DateTimePickerModule,
+    Ng2CsvModule,
     routing
   ],
   providers: [

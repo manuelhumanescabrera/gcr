@@ -2,6 +2,8 @@ import {ModuleWithProviders} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 
 // Importo componentes aquí
+import {InicioComponent} from './inicio/inicio.component';
+import {ErrorComponent} from './error/error.component';
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {PeticionesComponent} from './peticiones/peticiones.component';
@@ -10,10 +12,13 @@ import {RecibosComponent} from './recibos/recibos.component';
 import {RecibosDetComponent} from './recibos-det/recibos-det.component';
 import {SociosComponent} from './socios/socios.component';
 import {SociosDetComponent} from './socios-det/socios-det.component';
+import {RemesasComponent} from './remesas/remesas.component';
 
 
 
 const appRoutes: Routes = [
+  {path: '', component: InicioComponent},
+  {path: 'inicio', component: InicioComponent},
   {path: 'socios', component: SociosComponent},
   {path: 'socios-det/:num/:edit', component: SociosDetComponent},
   {path: 'login', component: LoginComponent},
@@ -21,18 +26,11 @@ const appRoutes: Routes = [
   {path: 'peticiones', component: PeticionesComponent},
   {path: 'peticiones-edit', component: PeticionesEditComponent},
   {path: 'recibos', component: RecibosComponent},
-  {path: 'recibos-det/:num', component:RecibosDetComponent}
-  // {path: '', component: HomeComponent},
-  // {path: 'tienda', component: TiendaComponent},
-  // {path: 'animales', component: AnimalsComponent},
-  // {path: 'contacto', component: ContactComponent},
-  // {path: 'home', component: HomeComponent},
-  // {path: 'cuidadores', component: KeeperComponent},
-  // {path: 'registro', component: RegisterComponent},
-  // {path: 'login', component: LoginComponent},
-  // {path: 'actualizar-datos', component: UserEditComponent},
-  // {path: '**', component: HomeComponent},
-  // {path: '', redirectTo: 'home', pathMatch: 'full'}
+  {path: 'recibos-det/:num', component:RecibosDetComponent},
+  {path: 'remesas', component:RemesasComponent},
+  {path: '**', component: ErrorComponent},
+  {path: '', redirectTo: 'inicio', pathMatch: 'full'}
+
 
 ];
 

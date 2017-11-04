@@ -1,6 +1,7 @@
 export const GLOBAL = {
   url: "https://jmmanzano.es",
   urlBackend: "https://jmmanzano.es/proyecto/php/index.php",
+  pHora: 25,
   es: {
     firstDayOfWeek: 1,
     dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],

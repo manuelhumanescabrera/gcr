@@ -162,8 +162,8 @@ export class PeticionesComponent implements OnInit {
     })
   }
   generaRemesa() {
-    this.remesa.titulo = 'remesa demo';
-    this.remesa.fecha = '2017-10-11';
+    this.remesa.concepto = 'remesa demo';
+    this.remesa.fecha_fin = '2017-10-11';
     this._operaciones.generaRemesa(this.remesa).subscribe(res => {
       console.log(res.message);
       this.getPeticiones();

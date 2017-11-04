@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
+import {Socio} from '../models/socios.model';
 import { Peticion } from '../models/peticion.model';
 import {Telefono} from '../models/telefono.model';
 import {Remesa} from '../models/remesa.model';
@@ -57,6 +58,20 @@ generaRemesa
     let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
     return this._http.post(this.url + '/genera-remesa', params, {headers: headers}).map(res=>res.json());
   }
+  /*Obtiene datos de las remesas*/
+  getRemesas(){
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url+'/remesas', {headers: headers}).map(res=>res.json());
+  }
+  /*
+generaRemesa
+   */
+  getRemesa(remesa:Remesa){
+    let json = JSON.stringify(remesa);
+    let params = 'json=' + json;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/remesa', params, {headers: headers}).map(res=>res.json());
+  }
   /*
   Obtiene el nombre de un usuario de la base de datos.
   */
@@ -88,6 +103,25 @@ generaRemesa
     return this._http.get(this.url + '/socio-sig').map(res => res.json());
   }
   /*
+    inserta socio
+   */
+   setSocio(socio: Socio) {
+     let json = JSON.stringify(socio);
+     console.log(json);
+     let params = 'json=' + json;
+     let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+     return this._http.post(this.url + '/socio-inserta', params, { headers: headers }).map(res => res.json());
+   }
+  /*
+    actualiza un socio
+   */
+   setSocioActualiza(socio: Socio) {
+     let json = JSON.stringify(socio);
+     let params = 'json=' + json;
+     let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+     return this._http.post(this.url + '/socio-actualiza', params, { headers: headers }).map(res => res.json());
+   }
+  /*
   Obtiene los datos de un usuario de la base de datos.
   */
   getCantidad(id: number) {
@@ -113,7 +147,6 @@ generaRemesa
   setTelefono(telefono: Telefono) {
     let json = JSON.stringify(telefono);
     let params = 'json=' + json;
-    console.log(params);
     let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
     return this._http.post(this.url + '/telefono', params, { headers: headers }).map(res => res.json());
   }

@@ -1,7 +1,7 @@
 export class Remesa{
   constructor (
-    public numero: number,
-    public titulo: string,
-    public fecha: string
+    public remesa: number,
+    public concepto: string,
+    public fecha_fin: string
   ) {}
 }
