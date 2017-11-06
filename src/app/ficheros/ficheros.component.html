@@ -1,0 +1,36 @@
+<div class="container-fluid">
+  <div class="page-header">
+    <h1>{{titulo}}</h1>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-lg-2">
+      <div class="fileUpload btn btn-primary btn-block" (change)="cargaFichero($event)">
+        <span>Subir fichero</span>
+        <input type="file" class="upload" id="fichero" />
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <button class="btn btn-warning btn-block" (click)="procesarDevoluciones()">Procesar</button>
+    </div>
+  </div>
+  <br>
+</div>
+<div *ngIf="cargos.length > 0" class="table-responsive">
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th>NUMERO</th>
+      <th>NOMBRE</th>
+      <th>CONCEPTO</th>
+      <th>EUROS</th>
+      <th>FECHA</th>
+    </tr>
+    <tr *ngFor="let cargo of cargos">
+      <td>{{cargo.numero}}</td>
+      <td>{{cargo.nombre}}</td>
+      <td>{{cargo.concepto}}</td>
+      <td>{{cargo.cantidad}}</td>
+      <td>{{cargo.fecha}}</td>
+    </tr>
+  </table>
+</div>

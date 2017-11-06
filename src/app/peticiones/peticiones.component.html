@@ -33,6 +33,35 @@
   </form>
   <!-- Desde aquí la tabla de datos -->
   <hr>
+    <!-- <form #formRemesas="ngForm" (submit)="generaRemesa()"> -->
+      <div class="row" *ngIf="inputDatosRem">
+        <div class="col-lg-6">
+          <div class="form-group" [class.has-primary]="!concepto.touched" [class.has-success]="concepto.valid && concepto.touched" [class.has-error]="concepto.invalid && (concepto.dirty || concepto.touched)">
+            <label class="label label-primary" for="concepto">Concepto:</label>
+            <input class="form-control" name="concepto" id="concepto" type="text" #concepto="ngModel" [(ngModel)]="remesa.concepto" pattern="[\w\s.,-/]{3,}" placeholder="RECIBO POZO LA LUNA: XX-XX/20XX" required >
+            <div *ngIf="concepto.invalid && (concepto.dirty || concepto.touched)" class="control-label has-error">
+              Dato obligatorio
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group" [class.has-primary]="!fFin.touched" [class.has-success]="fFin.valid && fFin.touched" [class.has-error]="fFin.invalid && (fFin.dirty || fFin.touched)">
+            <label class="label label-primary" for="fFin">Fecha:</label>
+            <owl-date-time name="fFin" id="fFin" #fFin="ngModel" [(ngModel)]="remesa.fecha_fin" [autoClose]="true" [type]="'calendar'" [dateFormat]="'YYYY-MM-DD'" [locale]="es" [placeHolder]="'yyyy-mm-dd'" [inputId]="'fFin'" required ></owl-date-time>
+            <div  *ngIf="fFin.invalid && (fFin.dirty || fFin.touched)" class="control-label has-error">
+              Dato obligatorio
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <p></p>
+            <button class="btn btn-success" type="button" name="button" (click)="generaRemesa()" [disabled]="remesa.concepto == '' || remesa.fecha_fin == ''">Consolidar remesa</button>
+          </div>
+        </div>
+      </div>
+    <!-- </form> -->
+  <hr>
   <div class="table-responsive">
     <table *ngIf="peticiones.length > 0" class="table table-striped table-bordered">
       <tr>
@@ -48,7 +77,7 @@
     Acciones <span class="caret"></span>
           </button>
             <ul class="dropdown-menu">
-              <li (click)="generaRemesa()"><a>Generar remesa</a></li>
+              <li (click)="muestraInputDatosRem()"><a>Generar remesa</a></li>
               <li role="separator" class="divider"></li>
               <li (click)="deleteAll()"><a>Borrar seleccionados</a></li>
             </ul>

@@ -28,6 +28,8 @@ import { RecibosDetComponent } from './recibos-det/recibos-det.component';
 import { InicioComponent } from './inicio/inicio.component';
 import { ErrorComponent } from './error/error.component';
 import { RemesasComponent } from './remesas/remesas.component';
+import { SmsComponent } from './sms/sms.component';
+import { FicherosComponent } from './ficheros/ficheros.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { RemesasComponent } from './remesas/remesas.component';
     RecibosDetComponent,
     InicioComponent,
     ErrorComponent,
-    RemesasComponent
+    RemesasComponent,
+    SmsComponent,
+    FicherosComponent
   ],
   imports: [
     BrowserModule,

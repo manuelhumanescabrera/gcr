@@ -13,6 +13,8 @@ import {RecibosDetComponent} from './recibos-det/recibos-det.component';
 import {SociosComponent} from './socios/socios.component';
 import {SociosDetComponent} from './socios-det/socios-det.component';
 import {RemesasComponent} from './remesas/remesas.component';
+import {FicherosComponent} from './ficheros/ficheros.component';
+import {SmsComponent} from './sms/sms.component';
 
 
 
@@ -28,6 +30,8 @@ const appRoutes: Routes = [
   {path: 'recibos', component: RecibosComponent},
   {path: 'recibos-det/:num', component:RecibosDetComponent},
   {path: 'remesas', component:RemesasComponent},
+  {path: 'ficheros', component:FicherosComponent},
+  {path: 'sms', component:SmsComponent},
   {path: '**', component: ErrorComponent},
   {path: '', redirectTo: 'inicio', pathMatch: 'full'}
 

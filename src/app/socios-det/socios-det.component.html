@@ -8,7 +8,7 @@
       <div class="col-lg-4">
         <div class="form-group" [class.has-primary]="!nombre.touched" [class.has-success]="nombre.valid && nombre.touched" [class.has-error]="nombre.invalid && (nombre.dirty || nombre.touched)">
           <label class="label label-primary" for="nombre">Nombre:</label>
-          <input class="form-control" name="nombre" id="nombre" type="text" #nombre="ngModel" [(ngModel)]="socio.nombre" pattern="[\w\s.,]{4,}" required [disabled]="!bloqueo" >
+          <input class="form-control" name="nombre" id="nombre" type="text" #nombre="ngModel" [(ngModel)]="socio.nombre" pattern="[\w\s.,]{3,}" required [disabled]="!bloqueo" >
           <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="control-label has-error">
             Dato obligatorio. Longitud minima 4
           </div>

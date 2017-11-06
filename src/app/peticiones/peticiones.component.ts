@@ -21,6 +21,7 @@ export class PeticionesComponent implements OnInit {
   public back: boolean;
   public selectAll: boolean;
   public remesa: Remesa;
+  public inputDatosRem:boolean;
   constructor(
     private _operaciones: OperacionesService
   ) {
@@ -33,6 +34,7 @@ export class PeticionesComponent implements OnInit {
     this.back = true;
     this.selectAll = false;
     this.remesa = new Remesa(null, '', '');
+    this.inputDatosRem = false;
   }
 
   ngOnInit() {
@@ -161,11 +163,15 @@ export class PeticionesComponent implements OnInit {
       this.eliminar(pet, i, false);
     })
   }
+  muestraInputDatosRem(){
+    this.inputDatosRem = true;
+  }
   generaRemesa() {
-    this.remesa.concepto = 'remesa demo';
-    this.remesa.fecha_fin = '2017-10-11';
+    console.log(this.remesa);
     this._operaciones.generaRemesa(this.remesa).subscribe(res => {
       console.log(res.message);
+      this.inputDatosRem = false;
+      this.remesa = new Remesa(null, '', '');
       this.getPeticiones();
     }, err => {
       console.log(<any>err);

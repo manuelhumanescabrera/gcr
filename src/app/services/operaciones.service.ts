@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import {Socio} from '../models/socios.model';
 import { Peticion } from '../models/peticion.model';
 import {Telefono} from '../models/telefono.model';
+import {Sms} from '../models/sms.model';
 import {Remesa} from '../models/remesa.model';
 import {Recibo} from '../models/recibo.model';
 import { GLOBAL } from './global.service';
@@ -193,7 +194,16 @@ generaRemesa
     return this._http.post(this.url + '/recibo', params, { headers: headers }).map(res => res.json());
   }
   /*
-Actualiza una peticion
+Inserta un recibo
+   */
+  setInsertaRecibo(recibo:Recibo) {
+    let json = JSON.stringify(recibo);
+    let params = 'json=' + json;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/inserta-recibo', params, { headers: headers }).map(res => res.json());
+  }
+  /*
+Actualiza un recibo
    */
   setActualizaRecibo(recibo:Recibo) {
     let json = JSON.stringify(recibo);
@@ -204,12 +214,12 @@ Actualiza una peticion
   /*
   envía un sms
   */
-  // sendSms(sms: Sms) {
-  //   //let dir = 'http://192.168.1.150:9090/sendsms?phone='+numero+'&text='+texto;
-  //   let json = JSON.stringify(sms);
-  //   let params = 'json=' + json;
-  //   let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
-  //   return this._http.post(this.url + '/sms', params, { headers: headers }).map(res => res.json());
-  // }
+  sendSms(sms: Sms) {
+    //let dir = 'http://192.168.1.150:9090/sendsms?phone='+numero+'&text='+texto;
+    let json = JSON.stringify(sms);
+    let params = 'json=' + json;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/sms', params, { headers: headers }).map(res => res.json());
+  }
 
 }

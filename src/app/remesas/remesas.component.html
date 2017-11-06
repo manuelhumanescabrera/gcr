@@ -7,7 +7,7 @@
       <div class="form-group" *ngIf="remesas.length > 0">
         <label class="label label-primary" for="remesa">Remesa:</label>
         <select  class="form-control" name="remesa" (change)="muestraRemesa($event)">
-          <option value="select">Selecciona una opción</option>
+          <option value="-1">Selecciona una opción</option>
           <option *ngFor="let remesa of remesas" value="{{remesa.remesa}}">{{remesa.concepto}}</option>
         </select>
       </div>
@@ -15,20 +15,21 @@
   </div>
   <hr>
   <div class="row" *ngIf="nombres.length > 0">
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label class="label label-primary" for="horas">Horas:</label>
-        <input class="form-control" name="horas" type="text" value="{{totalHoras}}" disabled>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label class="label label-primary" for="euros">Cantidad:</label>
-        <input class="form-control" name="euros" type="text" value="{{totalEuros}}" disabled>
-      </div>
+    <div class="col-lg-2">
+        <button class="btn btn-primary btn-block" type="button" name="exportar" (click)="exportaRemesaCsv()">Exportar a CSV</button>
     </div>
     <div class="col-lg-2">
-        <button class="btn btn-success" type="button" name="exportar" (click)="exportaRemesa()">Exportar a CSV</button>
+        <button class="btn btn-default btn-block" type="button" name="sepa" (click)="almacenaSms()">Envia SMS</button>
+    </div>
+    <div class="col-lg-2">
+        <button class="btn btn-success btn-block" type="button" name="sepa" (click)="generaSepa()">Genera SEPA</button>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-2">
+      <h3 class=" noMargin"><span class="label label-primary">Horas: {{totalHoras}}</span></h3>
+    </div>
+    <div class="col-lg-3">
+      <h3 class=" noMargin"><span class="label label-primary">Cantidad: {{totalEuros}} €</span></h3>
     </div>
   </div>
   <div *ngIf="nombres.length > 0" class="table-responsive">
