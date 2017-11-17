@@ -10,22 +10,54 @@ export class LoginService {
   url: string;
 
   constructor(private _http: Http) {
-    this.url = GLOBAL.urlBackend;
+    this.url = GLOBAL.urlLogin;
 
   }
-  login(userToLogin, gettoken = null) {
-    let token = "aksdfklajsdflk";
-    if (gettoken != null) {
-      userToLogin.gettoken = gettoken;
-    }
-    let json = JSON.stringify(userToLogin);
-    console.log(json);
+  login(usuario) {
+    let json = JSON.stringify(usuario);
     let params =  'json='+json;
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    return this._http.post(this.url + 'login/'+token, params, { headers: headers }).map(
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/login', params, { headers: headers }).map(
       res => {
-        // res.json();//pasar a json cuando tenga la respuesta en index.php en json
-        return res;
+        return res.json();
+      },
+      err => {
+        console.log(<any>err);
+      });
+  }
+  singup(usuario) {
+    let json = JSON.stringify(usuario);
+    let params =  'json='+json;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/signup', params, { headers: headers }).map(
+      res => {
+        return res.json();
+      },
+      err => {
+        console.log(<any>err);
+      });
+  }
+  status() {
+    let obj = {comprobar: true};
+    let json = JSON.stringify(obj);
+    let params =  'json='+json;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/status', params, { headers: headers }).map(
+      res => {
+        return res.json();
+      },
+      err => {
+        console.log(<any>err);
+      });
+  }
+  signout() {
+    let obj = {comprobar: true};
+    let json = JSON.stringify(obj);
+    let params =  'json='+json;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/signout', params, { headers: headers }).map(
+      res => {
+        return res.json();
       },
       err => {
         console.log(<any>err);

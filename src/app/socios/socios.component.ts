@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Socio } from '../models/socios.model';
 import { Nombre } from '../models/nombre.model';
@@ -29,9 +29,16 @@ export class SociosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.ngDoCheck();
     // this.socios = this.getSocios();
     this.getNombres();
     this.nombresBack = this.nombres;
+  }
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if(usuario == "no"){
+      this._router.navigate(['login']);
+    }
   }
   getNombres() {
     this._operaciones.getNombres().subscribe(res => {

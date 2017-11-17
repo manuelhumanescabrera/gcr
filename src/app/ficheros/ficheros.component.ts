@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import { Cargo } from '../models/cargo.model';
 import { Recibo } from '../models/recibo.model';
 import { OperacionesService } from '../services/operaciones.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ficheros',
@@ -16,14 +17,22 @@ export class FicherosComponent implements OnInit {
   public cadena: string;
 
   constructor(
-    private _operaciones:OperacionesService
+    private _operaciones:OperacionesService,
+    private _route: ActivatedRoute,
+    private _router:Router
   ) {
     this.titulo = 'GESTIÓN DE FICHEROS';
     this.cargos = new Array();
   }
 
   ngOnInit() {
-
+    this.ngDoCheck();
+  }
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if(usuario == "no"){
+      this._router.navigate(['login']);
+    }
   }
   cargaFichero(event) {
     let file = event.originalTarget.files[0];

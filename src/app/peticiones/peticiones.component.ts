@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OperacionesService } from '../services/operaciones.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Peticion } from '../models/peticion.model';
 import { Nombre } from '../models/nombre.model';
 import { Remesa } from '../models/remesa.model';
@@ -23,7 +24,9 @@ export class PeticionesComponent implements OnInit {
   public remesa: Remesa;
   public inputDatosRem:boolean;
   constructor(
-    private _operaciones: OperacionesService
+    private _operaciones: OperacionesService,
+    private _route: ActivatedRoute,
+    private _router:Router
   ) {
     this.titulo = 'GESTIÓN DE PETICIONES';
     this.peticion = new Peticion(null, null, "", null);
@@ -37,7 +40,14 @@ export class PeticionesComponent implements OnInit {
     this.inputDatosRem = false;
   }
 
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if(usuario == "no"){
+      this._router.navigate(['login']);
+    }
+  }
   ngOnInit() {
+    this.ngDoCheck();
     $('#modalEdit').hide();
     this.getNombres();
     this.getPeticiones();

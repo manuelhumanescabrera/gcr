@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {Recibo} from '../models/recibo.model';
 import { Socio } from '../models/socios.model';
@@ -39,12 +39,19 @@ export class RecibosDetComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.ngDoCheck();
     this._route.params.forEach(params => {
       this.num = params['num'];
     });
     this.getSocioNombre();
     this.getRecibos();
     this.getCantidad();
+  }
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if(usuario == "no"){
+      this._router.navigate(['login']);
+    }
   }
   getSocioNombre(){
     this._operaciones.getNombre(this.num).subscribe(res=>{

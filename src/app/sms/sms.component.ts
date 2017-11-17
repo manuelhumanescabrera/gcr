@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { OperacionesService } from '../services/operaciones.service';
 import 'rxjs/add/operator/map';
 import { Sms } from '../models/sms.model';
@@ -14,20 +15,27 @@ export class SmsComponent implements OnInit {
   public fichero: any;
   public tipoFichero: string;
   public cadena: string;
-  public haySms:boolean;
-  constructor(private _operaciones: OperacionesService) {
+  public haySms: boolean;
+  constructor(private _operaciones: OperacionesService, private _route: ActivatedRoute,
+    private _router: Router) {
     this.titulo = 'Envio de SMS';
     this.arraySms = new Array();
     this.haySms = false;
   }
 
   ngOnInit() {
+    this.ngDoCheck();
     let smss = localStorage.getItem('sms');
-    if(smss != null){
+    if (smss != null) {
       this.arraySms = JSON.parse(smss);
       this.haySms = true;
     }
-
+  }
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if (usuario == "no") {
+      this._router.navigate(['login']);
+    }
   }
   cargaFichero(event) {
     let file = event.originalTarget.files[0];
@@ -61,7 +69,7 @@ export class SmsComponent implements OnInit {
       }
     }
   }
-  limpiaDatos(){
+  limpiaDatos() {
     this.arraySms = new Array();
     localStorage.removeItem('sms');
     this.haySms = false;

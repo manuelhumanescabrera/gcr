@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, DoCheck, Input, Output, EventEmitter } from '@angular/core';
 import { OperacionesService } from '../services/operaciones.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Peticion } from '../models/peticion.model';
-import { Nombre} from '../models/nombre.model';
+import { Nombre } from '../models/nombre.model';
 
 declare var $;
 @Component({
@@ -19,14 +20,21 @@ export class PeticionesEditComponent implements OnInit {
   public back: boolean;
 
 
-  constructor(private _operacionesService: OperacionesService) {
+  constructor(private _operacionesService: OperacionesService, private _route: ActivatedRoute,
+    private _router: Router) {
     this.titulo = 'EDITAR PETICIÓN';
     this.peticion = new Peticion(null, null, '', null);
     this.back = true; /*true si hay que*/
   }
 
   ngOnInit() {
-
+    this.ngDoCheck();
+  }
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if (usuario == "no") {
+      this._router.navigate(['login']);
+    }
   }
   setNombre() {
     this.nombre = this.nombres[this.peticion.numero - 1];

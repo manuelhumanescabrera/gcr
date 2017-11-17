@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Ng2CsvService } from 'ng2csv/Ng2Csv.service';
 import { CsvConfiguration } from 'ng2csv/CsvConfiguration';
@@ -44,7 +44,14 @@ export class RemesasComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.ngDoCheck();
     this.getRemesas();
+  }
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if(usuario == "no"){
+      this._router.navigate(['login']);
+    }
   }
   getRemesas() {
     this._operaciones.getRemesas().subscribe(res => {

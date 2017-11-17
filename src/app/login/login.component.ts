@@ -16,14 +16,23 @@ export class LoginComponent implements OnInit {
     private _router: Router,
     private _loginService: LoginService
   ) {
-    this.user = new User("", "", "", "", "", "", "");
+    this.user = new User("","", "", "", "");
   }
 
   ngOnInit() {
   }
   onSubmit() {
-    this._loginService.login(this.user, null).subscribe(res => {
-      console.log(res);
+    this.user.email = this.user.username;
+    this._loginService.login(this.user).subscribe(res => {
+      if(res.code == 200){
+        let obj = JSON.parse(res.data);
+        // console.log(obj);
+        localStorage.setItem("usuario",obj.name);
+        localStorage.setItem("email", obj.email);
+        this._router.navigate(["/"]);
+      }else{
+      console.log(res.message);
+    }
     }, err => {
       console.log(err);
     });

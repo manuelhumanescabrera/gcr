@@ -3,8 +3,8 @@
     <h3>ACCESO AL PROGRAMA</h3>
     <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
       <p>
-        <label class="label label-primary" for="email">Email:</label>
-        <input #email [(ngModel)]="user.email" class="form-control" type="email" name="email" placeholder="Email">
+        <label class="label label-primary" for="usuario">Usuario/Email:</label>
+        <input #usuario [(ngModel)]="user.username" class="form-control" type="usuario" name="usuario" placeholder="Usuario">
       </p>
       <p>
         <label class="label label-primary" for="password">Contraseña:</label>

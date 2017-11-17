@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,DoCheck } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { OperacionesService } from '../services/operaciones.service';
 import { Socio } from '../models/socios.model';
@@ -37,6 +37,7 @@ export class SociosDetComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.ngDoCheck();
     this._route.params.forEach(params => {
       this.num = params['num'];
       this.tipo = params['edit'];
@@ -50,6 +51,12 @@ export class SociosDetComponent implements OnInit {
     });
     this.getSocio();
     setTimeout(() => { this.setDisabled() }, 500);//meto algo de retardo para bloquear todos los inputs
+  }
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if(usuario == "no"){
+      this._router.navigate(['login']);
+    }
   }
 
   getSocio() {

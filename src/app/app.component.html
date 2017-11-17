@@ -24,8 +24,11 @@
           <li [routerLink]="['/ficheros']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-file"></span>Ficheros</a></li>
           <li [routerLink]="['/sms']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-phone"></span>SMS</a></li>
           <li class="nav-divider"></li>
-          <li [routerLink]="['/register']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Registro</a></li>
+          <!-- <li [routerLink]="['/register']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Registro</a></li> -->
           <li [routerLink]="['/login']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-log-in" ></span>Login</a></li>
+          <li class="nav-divider"></li>
+          <li (click)="status()"><a><span class="glyphicon glyphicon-user"></span>Status</a></li>
+          <li (click)="signout()"><a><span class="glyphicon glyphicon-log-in" ></span>SignOut</a></li>
         </ul>
       </div>
       <div class="col-xs-12 col-sm-10">
