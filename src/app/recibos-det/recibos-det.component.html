@@ -40,8 +40,10 @@
         <td><owl-date-time  [(ngModel)]="recibo.fecha_pago" [autoClose]="true" [type]="'calendar'" [dateFormat]="'YYYY-MM-DD'" [locale]="es" [placeHolder]="'yyyy-mm-dd'" [inputId]="'input9'"></owl-date-time></td>
         <td><textarea class="form-control" [(ngModel)]="recibo.observaciones" name="observaciones" rows="1" cols="20">{{recibo.observaciones}}</textarea></td>
         <td>
-            <button class="btn btn-success btn-xs" type="button" name="button" (click)="guardarRecibo($event)" value="{{recibo.id}}"><span class=" glyphicon glyphicon-list-alt"> </span>Guardar</button>
-            <button class="btn btn-warning btn-xs" type="button" name="button" (click)="salirEditar()" value="{{recibo.id}}"><span class=" glyphicon glyphicon-edit"> </span>Salir</button>
+          <div class="row">
+            <div class="col-xs-12"><button class="btn btn-success btn-xs btn-block" type="button" name="button" (click)="guardarRecibo($event)" value="{{recibo.id}}"><span class=" glyphicon glyphicon-list-alt"> </span>Guardar</button></div>
+            <div class="col-xs-12"><button class="btn btn-warning btn-xs btn-block" type="button" name="button" (click)="salirEditar()" value="{{recibo.id}}"><span class=" glyphicon glyphicon-edit"> </span>Salir</button></div>
+          </div>
         </td>
       </tr>
     </table>
@@ -66,7 +68,7 @@
             <td>{{recibo.fecha_pago}}</td>
             <td>{{recibo.observaciones}}</td>
             <td *ngIf="editar">
-                <button class="btn btn-warning btn-xs" type="button" name="button" (click)="editarRecibo($event)" value="{{recibo.id}}"><span class=" glyphicon glyphicon-edit" disabled="{editar}"> </span>Editar</button>
+                <button class="btn btn-warning btn-xs btn-block" type="button" name="button" (click)="editarRecibo($event)" value="{{recibo.id}}"><span class=" glyphicon glyphicon-edit" disabled="{editar}"> </span>Editar</button>
             </td>
           </tr>
         </table>
@@ -74,7 +76,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-lg-2">
+    <div class="col-lg-12">
       <div class="form-group">
         <input class="btn btn-primary btn-block" type="submit" name="enviar" value="Volver" (click)="volver()">
       </div>

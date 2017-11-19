@@ -1,16 +1,28 @@
 <div class="container">
-  <div class="col-lg-4 col-lg-offset-2">
+  <div class="col-sm-4 col-sm-offset-2">
     <h3>ACCESO AL PROGRAMA</h3>
-    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
-      <p>
-        <label class="label label-primary" for="usuario">Usuario/Email:</label>
-        <input #usuario [(ngModel)]="user.username" class="form-control" type="usuario" name="usuario" placeholder="Usuario">
-      </p>
-      <p>
-        <label class="label label-primary" for="password">Contraseña:</label>
-        <input #password [(ngModel)]="user.password" class="form-control" type="password" name="password" placeholder="Contraseña">
-      </p>
-      <input class="btn btn-success btn-block" type="submit" name="entrar" value="Entrar">
+    <form #formLogin="ngForm" (ngSubmit)="onSubmit()">
+      <div class="col-sm-12">
+        <div class="form-group" [class.has-primary]="!usuario.touched" [class.has-success]="usuario.valid && usuario.touched" [class.has-error]="usuario.invalid && (usuario.dirty || usuario.touched)">
+          <label class="label label-primary" for="usuario">Usuario/Email:</label>
+          <input #usuario="ngModel" [(ngModel)]="user.username" class="form-control" type="usuario" name="usuario" placeholder="Usuario" pattern="([\w\.]{3,}[@]?[\w]{1,}[\.]?[\w]{2,3})" required>
+          <div *ngIf="usuario.invalid && (usuario.dirty || usuario.touched)" class="control-label has-error">
+            Dato obligatorio. Longitud minima 5
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group" [class.has-primary]="!password.touched" [class.has-success]="password.valid && password.touched" [class.has-error]="password.invalid && (password.dirty || password.touched)">
+          <label class="label label-primary" for="password">Contraseña:</label>
+          <input #password="ngModel" [(ngModel)]="user.password" class="form-control" type="password" name="password" placeholder="Contraseña" pattern="[\w\W]{5,}" required>
+          <div *ngIf="password.invalid && (password.dirty || password.touched)" class="control-label has-error">
+            Dato obligatorio. Longitud minima 5
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+      <input class="btn btn-success btn-block" type="submit" name="entrar" value="Entrar" [disabled]="!formLogin.form.valid">
+    </div>
     </form>
   </div>
 </div>

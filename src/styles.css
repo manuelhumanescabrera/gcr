@@ -20,10 +20,19 @@ body {
   border-bottom-width:1px;
 }
 .active{
-  /*arreglar*/
-
+  background-color: #428bca;
 }
-
+.active>a{
+    color: #f9f9f9 !important;
+}
+.nav>li>a:hover{
+  background-color: #428bca !important;
+  color: #f9f9f9 !important;
+}
+.noPadding{
+  padding-left: 7px !important;
+  padding-right: 7px !important;
+}
 /* collapsed sidebar styles */
 @media screen and (max-width: 767px) {
   .row-offcanvas {
@@ -76,4 +85,26 @@ body {
     cursor: pointer;
     opacity: 0;
     filter: alpha(opacity=0);
+}
+/*.navbar-default{
+  background-color: #fff !important;
+  border-color: #fff !important;
+}*/
+.navbar-login
+{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
 }

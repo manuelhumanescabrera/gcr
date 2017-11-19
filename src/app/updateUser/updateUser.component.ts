@@ -5,27 +5,30 @@ import { User } from '../models/user.model';
 
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-updateUser',
+  templateUrl: './updateUser.component.html',
+  styleUrls: ['./updateUser.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class UpdateUserComponent implements OnInit {
 
-  user: User;
+  public user: User;
+  public titulo: string;
 
   constructor(
     private _route: ActivatedRoute,
     private _router: Router,
     private _loginService: LoginService
   ) {
+    this.titulo = "Actualizar Usuario"
     this.user = new User("","", "" ,"", "", "");
   }
 
   ngOnInit() {
+    this.user = JSON.parse(localStorage.getItem('usuario'));
   }
   onSubmit() {
     console.log(this.user);
-    this._loginService.singup(this.user).subscribe(res => {
+    this._loginService.updateUser(this.user).subscribe(res => {
       if(res.code == 200){
         console.log(res.message);
       }else{

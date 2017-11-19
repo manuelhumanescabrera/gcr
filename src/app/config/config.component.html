@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="col-sm-4 col-sm-offset-2">
+    <h3>{{titulo}}</h3>
+    <form #formConfig="ngForm" (ngSubmit)="setConfig()">
+      <div class="col-sm-12">
+        <div class="form-group" [class.has-primary]="!nombre.touched" [class.has-success]="nombre.valid && nombre.touched" [class.has-error]="nombre.invalid && (nombre.dirty || nombre.touched)">
+          <label class="label label-primary" for="nombre">Nombre de la Comunidad:</label>
+          <input #nombre="ngModel" [(ngModel)]="config.nombre" class="form-control" type="nombre" name="nombre" placeholder="Nombre de la Comunidad" pattern="[\w\.\s]{5,}" required>
+          <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="control-label has-error">
+            Dato obligatorio. Longitud minima 5
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group" [class.has-primary]="!ip.touched" [class.has-success]="ip.valid && ip.touched" [class.has-error]="ip.invalid && (ip.dirty || ip.touched)">
+          <label class="label label-primary" for="ip">IP Envío SMS:</label>
+          <input #ip="ngModel" [(ngModel)]="config.ipTelefono" class="form-control" type="text" name="ip" placeholder="IP Telefono" pattern="[\d]{1,3}[\.][\d]{1,3}[\.][\d]{1,3}[\.][\d]{1,3}" required>
+          <div *ngIf="ip.invalid && (ip.dirty || ip.touched)" class="control-label has-error">
+            Dato obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group" [class.has-primary]="!puerto.touched" [class.has-success]="puerto.valid && puerto.touched" [class.has-error]="puerto.invalid && (puerto.dirty || puerto.touched)">
+          <label class="label label-primary" for="puerto">Puerto Envío SMS:</label>
+          <input #puerto="ngModel" [(ngModel)]="config.puertoTelefono" class="form-control" type="text" name="puerto" placeholder="Puerto IP Teléfono" pattern="[\d]{1,5}" required>
+          <div *ngIf="puerto.invalid && (puerto.dirty || puerto.touched)" class="control-label has-error">
+            Dato obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+      <input class="btn btn-success btn-block" type="submit" name="entrar" value="Guardar" [disabled]="!formConfig.form.valid">
+    </div>
+    <div class="col-sm-12">
+    <input class="btn btn-primary btn-block" name="limpiar" value="Limpiar" (click)="limpiar()">
+  </div>
+    </form>
+  </div>
+  <!-- <button (click)="getConfig()" type="button" name="button">Leer</button>
+  <button (click)="setConfig()" type="button" name="button">escribir</button> -->
+</div>

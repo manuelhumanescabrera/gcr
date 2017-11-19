@@ -1,6 +1,6 @@
 <div class="container">
   <div class="col-lg-4 col-lg-offset-2">
-    <h3>REGISTRO</h3>
+    <h3>{{titulo}}</h3>
     <form #formRegister="ngForm" (ngSubmit)="onSubmit()">
       <div class="col-sm-12">
         <div class="form-group" [class.has-primary]="!name.touched" [class.has-success]="name.valid && name.touched" [class.has-error]="name.invalid && (name.dirty || name.touched)">
@@ -48,7 +48,25 @@
         </div>
       </div>
       <div class="col-sm-12">
-        <input class="btn btn-success btn-block" type="submit" name="entrar" value="Registrarse" [disabled]="!formRegister.form.valid">
+        <div class="form-group" [class.has-primary]="!passwordNew.touched" [class.has-success]="passwordNew.valid && passwordNew.touched" [class.has-error]="passwordNew.invalid && (passwordNew.dirty || passwordNew.touched)">
+          <label class="label label-primary" for="passwordNew">Contraseña Nueva:</label>
+          <input #passwordNew="ngModel" [(ngModel)]="user.passwordNew" class="form-control" type="password" name="passwordNew" placeholder="Contraseña Nueva" pattern="[\w\W]{5,}" required>
+          <div *ngIf="passwordNew.invalid && (passwordNew.dirty || passwordNew.touched)" class="control-label has-error">
+            Dato obligatorio. Longitud minima 5
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group" [class.has-primary]="!passwordVerify.touched" [class.has-success]="passwordNew.value == passwordVerify.value && passwordVerify.valid && passwordVerify.touched" [class.has-error]="passwordNew != passwordVerify && (passwordVerify.invalid && (passwordVerify.dirty || passwordVerify.touched))">
+          <label class="label label-primary" for="passwordVerify">Contraseña Nueva:</label>
+          <input #passwordVerify="ngModel" [(ngModel)]="user.passwordVerify" class="form-control" type="password" name="passwordVerify" placeholder="Repita su contraseña" pattern="[\w\W]{5,}" required>
+          <div *ngIf="passwordNew.value != passwordVerify.value && passwordVerify.invalid && (passwordVerify.dirty || passwordVerify.touched)" class="control-label has-error">
+            Las contraseñas deben coincidir
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <input class="btn btn-success btn-block" type="submit" name="entrar" value="Actualizar Datos" [disabled]="!formRegister.form.valid">
       </div>
     </form>
   </div>

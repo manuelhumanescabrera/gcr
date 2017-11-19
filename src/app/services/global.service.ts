@@ -1,7 +1,9 @@
 export const GLOBAL = {
+  nombre: "Comunidad de regantes pozo la luna",
   url: "https://jmmanzano.es",
   urlBackend: "https://jmmanzano.es/proyecto/php/index.php",
   urlLogin: "https://jmmanzano.es/proyecto/php/login.php",
+  urlConfig: "https://jmmanzano.es/proyecto/php/config.php",
   pHora: 25,
   es: {
     firstDayOfWeek: 1,

@@ -13,9 +13,14 @@ declare var $;
 export class SociosComponent implements OnInit {
   public titulo: string;
   public nombres: Nombre[];
+  public nombresPaginados: Nombre[];
   public nombresBack: Nombre[];
   public nombre: Nombre;
   public socio:Socio;
+  public tamPagina:number;
+  public paginas: number;
+  public arrPaginas:any;
+  public pagina: number;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
@@ -23,9 +28,14 @@ export class SociosComponent implements OnInit {
   ) {
     this.titulo = 'USUARIOS DE LA COMUNIDAD';
     this.nombres = new Array();
+    this.nombresPaginados = new Array();
     this.nombresBack = new Array();
     this.nombre = new Nombre(null, '');
     this.socio = new Socio(null, '','', '', false, '', '', null, null, '', false, '', null, '');
+    this.tamPagina = 10;
+    this.paginas = null;
+    this.arrPaginas = new Array();
+    this.pagina = 1;
   }
 
   ngOnInit() {
@@ -33,6 +43,7 @@ export class SociosComponent implements OnInit {
     // this.socios = this.getSocios();
     this.getNombres();
     this.nombresBack = this.nombres;
+
   }
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
@@ -49,6 +60,7 @@ export class SociosComponent implements OnInit {
         this.nombres.push(nom);
       });
       this.nombresBack = this.nombres.slice(0);
+      this.paginacion();
     }, err => {
       console.log(<any>err);
     })
@@ -89,6 +101,7 @@ export class SociosComponent implements OnInit {
     } else {
       this.nombres = this.nombresBack.slice(0);
     }
+    this.paginacion();
   }
 
   buscarNombre(evento) {
@@ -103,5 +116,27 @@ export class SociosComponent implements OnInit {
     } else {
       this.nombres = this.nombresBack.slice(0);
     }
+    this.paginacion();
+  }
+  paginacion(){
+    this.paginas = Math.ceil(this.nombres.length / this.tamPagina);
+    this.arrPaginas = Array(this.paginas).fill(0).map((x,i)=>i);
+    this.nombresPaginados = this.nombres.slice(((this.pagina-1)*this.tamPagina), (this.pagina*this.tamPagina));
+  }
+  paginaNext(){
+    if(this.pagina < this.paginas){
+      this.pagina +=1;
+      this.paginacion();
+    }
+  }
+  paginaPrev(){
+    if(this.pagina>1){
+      this.pagina -= 1;
+      this.paginacion();
+    }
+  }
+  irPagina(event){
+    this.pagina = parseInt(event.target.innerHTML);
+    this.paginacion();
   }
 }

@@ -3,20 +3,60 @@
   <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
       <div class="navbar-header">
-
         <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
            </button>
-           <a class="navbar-brand">C.R Completar</a>
+        <a class="navbar-brand">{{nombre | uppercase}}</a>
       </div>
+      <ul *ngIf="login" class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+                              <span class="glyphicon glyphicon-user"></span> 
+                              <strong>{{usuario.name}}</strong>
+                              <span class="glyphicon glyphicon-chevron-down"></span>
+                          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <div class="navbar-login">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <p class="text-center">
+                      <span class="glyphicon glyphicon-user icon-size"></span>
+                    </p>
+                  </div>
+                  <div class="col-lg-8">
+                    <p class="text-left"><strong>{{usuario.name}} {{usuario.surname}}</strong></p>
+                    <p class="text-left small">{{usuario.email}}</p>
+                    <p class="text-left">
+                      <a [routerLink]="['/updateUser']" class="btn btn-primary btn-block btn-sm">Actualizar Datos</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <div class="navbar-login navbar-login-session">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <p>
+                      <a (click)="signout()" class="btn btn-danger btn-block">Cerrar Sesion</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
   <div class="container">
     <div class="row row-offcanvas row-offcanvas-left">
       <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
-        <ul class="nav">
+        <ul *ngIf="login" class="nav">
           <li [routerLink]="['/socios']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Socios</a></li>
           <li [routerLink]="['/peticiones']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-hourglass"></span>Peticiones</a></li>
           <li [routerLink]="['/remesas']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-list"></span>Remesas</a></li>
@@ -24,11 +64,12 @@
           <li [routerLink]="['/ficheros']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-file"></span>Ficheros</a></li>
           <li [routerLink]="['/sms']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-phone"></span>SMS</a></li>
           <li class="nav-divider"></li>
+          <li [routerLink]="['/configuraciones']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-cog"></span>Configuración</a></li>
           <!-- <li [routerLink]="['/register']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Registro</a></li> -->
-          <li [routerLink]="['/login']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-log-in" ></span>Login</a></li>
-          <li class="nav-divider"></li>
+          <!-- <li [routerLink]="['/login']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-log-in" ></span>Login</a></li> -->
+          <!-- <li class="nav-divider"></li>
           <li (click)="status()"><a><span class="glyphicon glyphicon-user"></span>Status</a></li>
-          <li (click)="signout()"><a><span class="glyphicon glyphicon-log-in" ></span>SignOut</a></li>
+          <li (click)="signout()"><a><span class="glyphicon glyphicon-log-in" ></span>SignOut</a></li> -->
         </ul>
       </div>
       <div class="col-xs-12 col-sm-10">

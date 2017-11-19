@@ -1,6 +1,7 @@
 import { Component, OnInit, DoCheck } from '@angular/core';
 import { Cargo } from '../models/cargo.model';
 import { Recibo } from '../models/recibo.model';
+import { User } from '../models/user.model';
 import { OperacionesService } from '../services/operaciones.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -15,6 +16,7 @@ export class FicherosComponent implements OnInit {
   public cargos: Cargo[];
   public tipoFichero: string;
   public cadena: string;
+  public usuario:User;
 
   constructor(
     private _operaciones:OperacionesService,
@@ -23,14 +25,15 @@ export class FicherosComponent implements OnInit {
   ) {
     this.titulo = 'GESTIÓN DE FICHEROS';
     this.cargos = new Array();
+    this.usuario = new User("", "", "", "", "", "");
   }
 
   ngOnInit() {
     this.ngDoCheck();
   }
   ngDoCheck() {
-    let usuario = localStorage.getItem('usuario') || "no";
-    if(usuario == "no"){
+    this.usuario = JSON.parse(localStorage.getItem('usuario'));
+    if(this.usuario == null){
       this._router.navigate(['login']);
     }
   }

@@ -13,6 +13,6 @@ export class Sms{
     this.recibo = factura;
     this.cantidad = importe;
     this.estado = "Pendiente";
-    this.texto = encodeURI('C.R. POZO LA LUNA: ' + this.nombre + ' EL RECIBO ' + this.recibo + ' POR ' + this.cantidad + ' € PASARÁ AL COBRO EN LOS PRÓXIMOS DÍAS');
+    this.texto = encodeURI(this.nombre + ' EL RECIBO ' + this.recibo + ' POR ' + this.cantidad + ' € PASARÁ AL COBRO EN LOS PRÓXIMOS DÍAS');
   }
 }
