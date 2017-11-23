@@ -10,6 +10,7 @@ Para construir debes correr el comando `ng build --prod --bh='/proyecto/'
 ` en la carpeta raíz del mismo. Debes sustituir 'proyecto' por la ruta donde se ubicarán los ficheros generados, así para la raíz del servidor se podrá obviar el parámetro `--bh='proyecto'`, y para la ruta http://xxxx.com/yyy deberá ponerse `ng build --prod --bh='/yyy/'`.
 
 ## Rutas y variables
+BackEnd en php en [GCR-Backend](https://github.com/jmmanzano/gcr-backend) 
 En `/src/app/services/global.service.ts` se configuran las rutas a los servicios del backend, así como el nombre de la comunidad.
 
 ## Development server
