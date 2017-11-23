@@ -2,6 +2,16 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.3.2.
 
+## Instalar todo lo necesario
+Para poder desarrollar/construir este proyecto necesitas instalar [nodejs](https://nodejs.org/es/download/) en tu equipo. tras clonar el repositorio tendrás que ejecutar en la raiz del proyecto el comando `npm install` o `npm update` para obtener las dependencias.
+
+## Construir el Proyecto
+Para construir debes correr el comando `ng build --prod --bh='/proyecto/'
+` en la carpeta raíz del mismo. Debes sustituir 'proyecto' por la ruta donde se ubicarán los ficheros generados, así para la raíz del servidor se podrá obviar el parámetro `--bh='proyecto'`, y para la ruta http://xxxx.com/yyy deberá ponerse `ng build --prod --bh='/yyy/'`.
+
+## Rutas y variables
+En `/src/app/services/global.service.ts` se configuran las rutas a los servicios del backend, así como el nombre de la comunidad.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
