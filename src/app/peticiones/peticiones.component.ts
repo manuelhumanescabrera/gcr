@@ -24,7 +24,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   public remesa: Remesa;
   public inputDatosRem: boolean;
   public error: Error;
-  public message: string;
+  public mensaje: string;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
@@ -41,7 +41,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
     this.remesa = new Remesa(null, '', '');
     this.inputDatosRem = false;
     this.error = new Error();
-    this.message = '';
+    this.mensaje = '';
   }
 
   ngDoCheck() {
@@ -196,7 +196,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
         this.inputDatosRem = false;
         this.remesa = new Remesa(null, '', '');
         this.getPeticiones();
-        this.message = res.message;
+        this.mensaje = res.message;
         $("#success").show().delay(5000).fadeOut();
       } else {
         this.error = new Error(res.message);
