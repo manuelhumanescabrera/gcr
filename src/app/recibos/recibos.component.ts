@@ -1,4 +1,4 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Socio } from '../models/socios.model';
 import { Nombre } from '../models/nombre.model';
@@ -10,13 +10,13 @@ declare var $;
   templateUrl: './recibos.component.html',
   styleUrls: ['./recibos.component.css']
 })
-export class RecibosComponent implements OnInit {
+export class RecibosComponent implements OnInit, ErrorHandler {
   public titulo: string;
   public nombres: Nombre[];
   public nombresBack: Nombre[];
   public nombre: Nombre;
   public socio:Socio;
-
+  public error:Error;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
@@ -27,9 +27,11 @@ export class RecibosComponent implements OnInit {
     this.nombresBack = new Array();
     this.nombre = new Nombre(null, '');
     this.socio = new Socio(null, '','', '', false, '', '', null, null, '', false, '', null, '');
+    this.error = new Error();
   }
 
   ngOnInit() {
+    $("#error").hide();
     this.ngDoCheck();
     // this.socios = this.getSocios();
     this.getNombres();
@@ -43,16 +45,22 @@ export class RecibosComponent implements OnInit {
   }
   getNombres() {
     this._operaciones.getNombresPendientes().subscribe(res => {
-      let datos = res.data;
-      this.nombres = new Array();
-      $.each(datos, (i, nombre) => {
-        let nom = new Nombre(nombre.numero, nombre.nombre);
-        nom.pendiente = nombre.pendiente;
-        this.nombres.push(nom);
-      });
-      this.nombresBack = this.nombres.slice(0);
+      if(res.code == 200){
+        let datos = res.data;
+        this.nombres = new Array();
+        $.each(datos, (i, nombre) => {
+          let nom = new Nombre(nombre.numero, nombre.nombre);
+          nom.pendiente = nombre.pendiente;
+          this.nombres.push(nom);
+        });
+        this.nombresBack = this.nombres.slice(0);
+      }else{
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
 
@@ -97,5 +105,8 @@ export class RecibosComponent implements OnInit {
       this.nombres = this.nombresBack.slice(0);
     }
   }
-
+  handleError(error){
+    console.log(error.message);
+    $("#error").show().delay(5000).fadeOut();
+  }
 }

@@ -2,6 +2,7 @@
   <div class="page-header">
     <h1>{{titulo}}</h1>
   </div>
+  <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
   <form #formPeticionesEdit="ngForm" (submit)="onSubmit()">
     <div class="row">
       <div class="col-lg-12">
@@ -14,14 +15,14 @@
         <div class="col-lg-6">
           <div class="form-group">
             <label class="label label-primary" for="numero">Número:</label>
-            <input class="form-control" name="numero" type="number" #numero [(ngModel)]="peticion.numero" (change)="setNombre()" min="1" required>
+            <input class="form-control" name="numero" type="number" #numero="ngModel" [(ngModel)]="peticion.numero" (change)="setNombre()" min="1" pattern="\d+" required>
           </div>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="form-group">
           <label class="label label-primary" for="horas">Horas:</label>
-          <input class="form-control" name="horas" type="number" min="0.25" max="12" step="0.25" #horas [(ngModel)]="peticion.horas" required>
+          <input class="form-control" name="horas" type="text" #horas="ngModel" [(ngModel)]="peticion.horas" pattern="\d+(\.(00|25|50|75))?" required>
         </div>
       </div>
       <div class="col-lg-12">

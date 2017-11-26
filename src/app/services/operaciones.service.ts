@@ -134,6 +134,15 @@ generaRemesa
   getTelefonos(id: number) {
     return this._http.get(this.url + '/socio_telefonos/' + id).map(res => res.json());
   }
+  /*
+  Obtiene un array con los números de teléfono de un socio.
+   */
+  getTelefonosSocios(numeros) {
+    let json = JSON.stringify(numeros);
+    let params = 'json=' + json;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    return this._http.post(this.url + '/socios_telefonos', params, { headers: headers }).map(res => res.json());
+  }
   /*Obtiene la provincia desde un codigo de provincia*/
   getProvincia(id:string) {
     return this._http.get(this.url+'/provincia/'+id).map(res => res.json());

@@ -11,7 +11,13 @@ export const GLOBAL = {
     dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
     monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
     monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
-  }
+  },
+  csvConf: {
+    delimiter: "\t",
+    quote: "",
+    newLine: "\r",
+    includeHeaderLine: true
+    }
   // url: "http://192.168.1.36",
   // urlBackend: "https://jmmanzano.es/proyecto/php/index.php"
 }

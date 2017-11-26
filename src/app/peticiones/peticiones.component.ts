@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ErrorHandler } from '@angular/core';
 import { OperacionesService } from '../services/operaciones.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Peticion } from '../models/peticion.model';
@@ -10,7 +10,7 @@ declare var $;
   templateUrl: './peticiones.component.html',
   styleUrls: ['./peticiones.component.css']
 })
-export class PeticionesComponent implements OnInit {
+export class PeticionesComponent implements OnInit, ErrorHandler {
   public titulo: string;
   public peticion: Peticion;
   public peticiones: Peticion[];
@@ -22,11 +22,13 @@ export class PeticionesComponent implements OnInit {
   public back: boolean;
   public selectAll: boolean;
   public remesa: Remesa;
-  public inputDatosRem:boolean;
+  public inputDatosRem: boolean;
+  public error: Error;
+  public message: string;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
-    private _router:Router
+    private _router: Router
   ) {
     this.titulo = 'GESTIÓN DE PETICIONES';
     this.peticion = new Peticion(null, null, "", null);
@@ -38,17 +40,21 @@ export class PeticionesComponent implements OnInit {
     this.selectAll = false;
     this.remesa = new Remesa(null, '', '');
     this.inputDatosRem = false;
+    this.error = new Error();
+    this.message = '';
   }
 
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
-    if(usuario == "no"){
+    if (usuario == "no") {
       this._router.navigate(['login']);
     }
   }
   ngOnInit() {
     this.ngDoCheck();
     $('#modalEdit').hide();
+    $("#error").hide();
+    $("#success").hide();
     this.getNombres();
     this.getPeticiones();
     var that = this;//defino esto para poder utilizar el objeto dentro de la función
@@ -62,25 +68,29 @@ export class PeticionesComponent implements OnInit {
   }
   getNombres() {
     this._operaciones.getNombres().subscribe(res => {
-      if (res.data != null) {
+      if (res.code == 200) {
         this.nombres = res.data;
       } else {
-        //gestionar error
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
 
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(err);
     })
   }
   getPeticiones() {
     this._operaciones.getPeticiones().subscribe(res => {
-      if (res.data != null) {
+      if (res.code == 200) {
         this.peticiones = res.data;
       } else {
-        //gestionar error
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(err);
     });
   }
   onSubmit() {
@@ -97,7 +107,7 @@ export class PeticionesComponent implements OnInit {
   }
   setNombre() {
     var num;
-    if (this.peticion.numero == undefined || this.peticion.numero - 1 > this.nombres.length -1 || this.peticion.numero - 1 < 0 ) {
+    if (this.peticion.numero == undefined || this.peticion.numero - 1 > this.nombres.length - 1 || this.peticion.numero - 1 < 0) {
       this.peticion.nombre = "";
       this.peticion.numero = Number.NaN;
     } else {
@@ -112,15 +122,17 @@ export class PeticionesComponent implements OnInit {
   addPeticion() {
     this._operaciones.setPeticion(this.peticion).subscribe(
       res => {
-        if (res.code == "200") {
+        if (res.code == 200) {
           this.getPeticiones();
           this.peticion = new Peticion(null, null, "", null);
         } else {
-          //gestionar error
+          this.error = new Error(res.message);
+          this.handleError(this.error);
         }
       },
       err => {
-        //gestionar error
+        this.error = err;
+        this.handleError(err);
       }
     );
   }
@@ -143,14 +155,16 @@ export class PeticionesComponent implements OnInit {
       peticionEliminar = this.peticiones[evento.value];
     }
     this._operaciones.deletePeticion(peticionEliminar.id).subscribe(res => {
-      if (res.code == "200") {
+      if (res.code == 200) {
         // this.peticiones.splice(pos, 1);
         this.getPeticiones();
       } else {
-        //gestionar error
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(err);
     })
   }
   cerrarModal() {
@@ -173,18 +187,31 @@ export class PeticionesComponent implements OnInit {
       this.eliminar(pet, i, false);
     })
   }
-  muestraInputDatosRem(){
+  muestraInputDatosRem() {
     this.inputDatosRem = true;
   }
   generaRemesa() {
-    console.log(this.remesa);
     this._operaciones.generaRemesa(this.remesa).subscribe(res => {
-      console.log(res.message);
-      this.inputDatosRem = false;
-      this.remesa = new Remesa(null, '', '');
-      this.getPeticiones();
+      if (res.code == 200) {
+        this.inputDatosRem = false;
+        this.remesa = new Remesa(null, '', '');
+        this.getPeticiones();
+        this.message = res.message;
+        $("#success").show().delay(5000).fadeOut();
+      } else {
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(err);
     });
+  }
+  salirGenRemesa(){
+    this.inputDatosRem = false;
+  }
+  handleError(error) {
+    console.log(error.message);
+    $("#error").show().delay(5000).fadeOut();
   }
 }

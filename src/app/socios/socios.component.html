@@ -27,9 +27,9 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-xs-2">
+    <div class="col-sm-2">
       <p><span>Elementos por página:</span> <span>
-      <select class="form-control">
+      <select #selectPag (change)="setPaginacion($event)" class="form-control">
       <option value="10">10</option>
       <option value="25">25</option>
       <option value="50">50</option>
@@ -38,6 +38,9 @@
     </select>
     </span>
     </p>
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-primary btn-block" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
     </div>
   </div>
 

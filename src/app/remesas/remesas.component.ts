@@ -1,19 +1,21 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Ng2CsvService } from 'ng2csv/Ng2Csv.service';
 import { CsvConfiguration } from 'ng2csv/CsvConfiguration';
 import { Remesa } from '../models/remesa.model';
 import { Nombre } from '../models/nombre.model';
+import { Telefono } from '../models/telefono.model';
 import { Sms } from '../models/sms.model';
 import { OperacionesService } from '../services/operaciones.service';
 import { GLOBAL } from '../services/global.service';
 declare var SEPA: any;
+declare var $;
 @Component({
   selector: 'app-remesas',
   templateUrl: './remesas.component.html',
   styleUrls: ['./remesas.component.css']
 })
-export class RemesasComponent implements OnInit {
+export class RemesasComponent implements OnInit, ErrorHandler {
   public titulo: string;
   public remesas: Remesa[];
   public remesa: Remesa;
@@ -21,8 +23,9 @@ export class RemesasComponent implements OnInit {
   public pHora: number;
   public totalHoras: number;
   public totalEuros: number;
-  public csvConf: CsvConfiguration;
   public arraySms: Sms[];
+  public error: Error;
+  public telefonos: Telefono[];
 
   constructor(
     private _operaciones: OperacionesService,
@@ -37,19 +40,20 @@ export class RemesasComponent implements OnInit {
     this.nombres = new Array();
     this.totalEuros = 0;
     this.totalHoras = 0;
-    this.csvConf = new CsvConfiguration();
-    this.csvConf.delimiter = '\t';
-    this.csvConf.includeHeaderLine = true;
     this.arraySms = new Array();
+    this.error = new Error();
+    this.telefonos = new Array();
   }
 
   ngOnInit() {
+    $('#pleaseWaitDialog').hide();
+    $('#error').hide();
     this.ngDoCheck();
     this.getRemesas();
   }
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
-    if(usuario == "no"){
+    if (usuario == "no") {
       this._router.navigate(['login']);
     }
   }
@@ -58,11 +62,12 @@ export class RemesasComponent implements OnInit {
       if (res.code == 200) {
         this.remesas = res.data;
       } else {
-        console.log(res.message);
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
-
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   muestraRemesa(event) {
@@ -90,10 +95,12 @@ export class RemesasComponent implements OnInit {
         }
         this.totalEuros = this.totalHoras * this.pHora;
       } else {
-        console.log(res.message);
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   exportaRemesaCsv() {
@@ -101,42 +108,56 @@ export class RemesasComponent implements OnInit {
       // {remesa: this.remesa.concepto},
       { data: JSON.stringify(this.nombres) }
     ];
-    this._ng2Csv.download(this.nombres, 'remesa.csv', undefined, this.csvConf);
+    this._ng2Csv.download(this.nombres, 'remesa.csv', undefined, GLOBAL.csvConf);
   }
   generaSepa() {
     let num = 'ES9330230034361234567891';
     console.log(num);
   }
+
   async preparaSms() {
+    $('#pleaseWaitDialog').show();
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
+    let tels = new Array();
     for (let i = 0; i < this.nombres.length; i++) {
-      await sleep(250);
-      console.log(i);
-      this._operaciones.getTelefonos(this.nombres[i].numero).subscribe(res => {
-        if (res.code == 200) {
-          this.nombres[i].telefonos = JSON.parse(res.data);
-          this.nombres[i].totalTelefonos = this.nombres[i].telefonos.length;
-          for (let j = 0; j < this.nombres[i].totalTelefonos; j++) {
+      tels.push(this.nombres[i].numero);
+    }
+    this._operaciones.getTelefonosSocios(tels).subscribe(res => {
+      if (res.code == 200) {
+        this.telefonos = JSON.parse(res.data);
+        for (let i = 0; i < this.nombres.length; i++) {
+          this.nombres[i].telefonos = this.telefonos.filter(telefono => telefono.socio == this.nombres[i].numero);
+          for (let j = 0; j < this.nombres[i].telefonos.length; j++) {
             let cantidad = (parseFloat(this.nombres[i].horas.replace(',', '.')) * this.pHora).toString();
             this.arraySms.push(new Sms(this.nombres[i].numero.toString(), this.nombres[i].nombre, this.nombres[i].telefonos[j].telefono.toString(), this.remesa.concepto, cantidad));
           }
-        } else {
-          this.nombres[i].totalTelefonos = 0;
         }
-      });
-    }
+      } else {
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
+    }, err => {
+      this.error = err;
+      this.handleError(this.error);
+    });
+    await sleep(2500);
+    $('#pleaseWaitDialog').hide();
   }
   almacenaSms() {
     this.preparaSms().then(() => {
-      if(this.arraySms.length > 0){
+      if (this.arraySms.length > 0) {
         localStorage.setItem('sms', JSON.stringify(this.arraySms));
         this._router.navigate(['/sms']);
-      }else{
-        console.log('No hay sms');
+      } else {
+        this.error = new Error('No hay sms');
+        this.handleError(this.error);
       }
-
     })
+  }
+  handleError(error) {
+    console.log(error.message);
+    $("#error").show().delay(5000).fadeOut();
   }
 }
