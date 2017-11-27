@@ -3,9 +3,9 @@ export class Nombre{
   public pendiente: number;
   public horas:string;
   public telefonos: Telefono[];
-  public totalTelefonos: number;
   constructor(
     public numero: number,
-    public nombre: string
+    public nombre: string,
+    public domiciliado: any
   ){}
 }

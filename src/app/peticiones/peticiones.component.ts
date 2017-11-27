@@ -33,7 +33,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
     this.titulo = 'GESTIÓN DE PETICIONES';
     this.peticion = new Peticion(null, null, "", null);
     this.peticiones = new Array();
-    this.nombre = new Nombre(null, "");
+    this.nombre = new Nombre(null, "", false);
     this.nombres = new Array();
     this.peticionEdit = new Peticion(null, null, "", null);
     this.back = true;
@@ -186,6 +186,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
     $.each($(".check-peticiones"), (i, pet) => {
       this.eliminar(pet, i, false);
     })
+    this.peticiones = new Array();
   }
   muestraInputDatosRem() {
     this.inputDatosRem = true;

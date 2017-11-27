@@ -25,7 +25,7 @@ export class RecibosComponent implements OnInit, ErrorHandler {
     this.titulo = 'GESTIÓN DE RECIBOS';
     this.nombres = new Array();
     this.nombresBack = new Array();
-    this.nombre = new Nombre(null, '');
+    this.nombre = new Nombre(null, '', false);
     this.socio = new Socio(null, '','', '', false, '', '', null, null, '', false, '', null, '');
     this.error = new Error();
   }
@@ -49,7 +49,7 @@ export class RecibosComponent implements OnInit, ErrorHandler {
         let datos = res.data;
         this.nombres = new Array();
         $.each(datos, (i, nombre) => {
-          let nom = new Nombre(nombre.numero, nombre.nombre);
+          let nom = new Nombre(nombre.numero, nombre.nombre, nombre.domiciliado);
           nom.pendiente = nombre.pendiente;
           this.nombres.push(nom);
         });

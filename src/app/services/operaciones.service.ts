@@ -35,7 +35,6 @@ export class OperacionesService {
   setPeticion(peticion: Peticion) {
     let json = JSON.stringify(peticion);
     let params = 'json=' + json;
-    console.log(params);
     let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
     return this._http.post(this.url + '/hora', params, { headers: headers }).map(res => res.json());
   }

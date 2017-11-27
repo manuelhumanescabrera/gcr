@@ -1,14 +1,15 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OperacionesService } from '../services/operaciones.service';
 import 'rxjs/add/operator/map';
 import { Sms } from '../models/sms.model';
+declare var $;
 @Component({
   selector: 'app-sms',
   templateUrl: './sms.component.html',
   styleUrls: ['./sms.component.css']
 })
-export class SmsComponent implements OnInit {
+export class SmsComponent implements OnInit, ErrorHandler {
   public titulo: string;
   public sms: Sms;
   public arraySms: Array<Sms>;
@@ -16,14 +17,20 @@ export class SmsComponent implements OnInit {
   public tipoFichero: string;
   public cadena: string;
   public haySms: boolean;
+  public error: Error;
+  public porcEnvio:string;
   constructor(private _operaciones: OperacionesService, private _route: ActivatedRoute,
     private _router: Router) {
-    this.titulo = 'Envio de SMS';
+    this.titulo = 'ENVÍO DE SMS';
     this.arraySms = new Array();
     this.haySms = false;
+    this.error = new Error();
+    this.porcEnvio = "";
   }
 
   ngOnInit() {
+    $('#pleaseWaitDialog').hide();
+    $("#error").hide();
     this.ngDoCheck();
     let smss = localStorage.getItem('sms');
     if (smss != null) {
@@ -60,13 +67,27 @@ export class SmsComponent implements OnInit {
       if (coma.length > tabulador.length) {
         caracter = ",";
       }
+      let noFilas = true;
       for (let i = 1; i < linea.length - 1; i++) {
         let texto = linea[i].split(caracter);
-        let cantidad = texto[4].replace(",", ".");
-        if (texto[2] != "" && parseFloat(cantidad) > 0) {
-          this.arraySms.push(new Sms(texto[0], texto[1], texto[2], texto[3], texto[4]));
+        if (texto.length >= 5) {
+            let cantidad = texto[4].replace(",", ".");
+            if (texto[2] != "" && parseFloat(cantidad) > 0) {
+              this.arraySms.push(new Sms(texto[0], texto[1], texto[2], texto[3], texto[4]));
+              noFilas = false;
+            }
+        } else {
+          this.error = new Error('El archivo no tiene suficientes campos.');
+          this.handleError(this.error);
         }
       }
+      if(noFilas){
+        this.error = new Error('No existen datos o no son adecuados.');
+        this.handleError(this.error);
+      }
+    } else {
+      this.error = new Error('Archivo no soportado.');
+      this.handleError(this.error);
     }
   }
   limpiaDatos() {
@@ -75,15 +96,15 @@ export class SmsComponent implements OnInit {
     this.haySms = false;
   }
   async enviaSMS() {
+    $('#pleaseWaitDialog').show();
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
     for (let i = 0; i < this.arraySms.length; i++) {
       await sleep(3000);
+      this.calculaPorcentaje(i+1);
       this._operaciones.sendSms(this.arraySms[i]).subscribe(
         result => {
-          // da ok si hay respuesta del servidor aunque la respuesta sea 404, por
-          // eso el if else.
           if (result.code == 200) {
             this.arraySms[i].estado = "Enviado";
           } else {
@@ -95,5 +116,15 @@ export class SmsComponent implements OnInit {
         }
       );
     }
+    await sleep(1000);
+    $('#pleaseWaitDialog').hide();
   }
+  calculaPorcentaje(enviados:number){
+    this.porcEnvio = ""+(enviados*100)/this.arraySms.length+"%";
+  }
+  handleError(error) {
+    console.log(error.message);
+    $("#error").show().delay(5000).fadeOut();
+  }
+
 }

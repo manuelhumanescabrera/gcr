@@ -31,7 +31,7 @@ export class RecibosDetComponent implements OnInit {
   ) {
     this.titulo = 'RECIBOS PENDIENTES: ';
     this.recibos = new Array();
-    this.nombre = new Nombre(null, '');
+    this.nombre = new Nombre(null, '', false);
     this.cantidad = null;
     this.editar = true;
     this.recibo = new Recibo(null, null, '', null, '' ,false,'', '' );
@@ -57,7 +57,7 @@ export class RecibosDetComponent implements OnInit {
     this._operaciones.getNombre(this.num).subscribe(res=>{
       if(res.code === 200){
       let nom = JSON.parse(res.data);
-        this.nombre = new Nombre (this.num, nom.nombre);
+        this.nombre = new Nombre (this.num, nom.nombre, false);
       }//dirigir a error
     }, err=>{
       console.log(<any>err);

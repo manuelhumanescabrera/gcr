@@ -2,7 +2,6 @@
   <div class="page-header">
     <h1>{{titulo}}</h1>
   </div>
-  <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
   <div id="success" class="alert alert-success" role="alert">{{mensaje}}</div>
   <form #formPeticiones="ngForm" (submit)="onSubmit()">
     <div class="row">
@@ -35,6 +34,7 @@
   </form>
   <!-- Desde aquí la tabla de datos -->
   <hr>
+    <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
     <!-- <form #formRemesas="ngForm" (submit)="generaRemesa()"> -->
       <div class="row" *ngIf="inputDatosRem">
         <div class="col-lg-6">

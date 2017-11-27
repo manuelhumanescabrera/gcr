@@ -102,4 +102,7 @@ export class FicherosComponent implements OnInit {
       })
     }
   }
+  limpiaDatos() {
+    this.cargos = new Array();
+  }
 }

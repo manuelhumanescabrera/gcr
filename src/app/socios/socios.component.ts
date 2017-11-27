@@ -1,6 +1,5 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Socio } from '../models/socios.model';
 import { Nombre } from '../models/nombre.model';
 import { OperacionesService } from '../services/operaciones.service';
 import { Ng2CsvService } from 'ng2csv/Ng2Csv.service';
@@ -13,17 +12,19 @@ declare var $;
   templateUrl: './socios.component.html',
   styleUrls: ['./socios.component.css']
 })
-export class SociosComponent implements OnInit {
+export class SociosComponent implements OnInit, ErrorHandler {
   public titulo: string;
   public nombres: Nombre[];
   public nombresPaginados: Nombre[];
   public nombresBack: Nombre[];
   public nombre: Nombre;
-  public socio: Socio;
   public tamPagina: number;
   public paginas: number;
   public arrPaginas: any;
   public pagina: number;
+  public domiciliados:boolean;
+  public paginacionOff:boolean;
+  public error:Error;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
@@ -34,15 +35,18 @@ export class SociosComponent implements OnInit {
     this.nombres = new Array();
     this.nombresPaginados = new Array();
     this.nombresBack = new Array();
-    this.nombre = new Nombre(null, '');
-    this.socio = new Socio(null, '', '', '', false, '', '', null, null, '', false, '', null, '');
+    this.nombre = new Nombre(null, '', false);
     this.tamPagina = 10;
     this.paginas = null;
     this.arrPaginas = new Array();
     this.pagina = 1;
+    this.domiciliados = false;
+    this.paginacionOff = false;
+    this.error = new Error();
   }
 
   ngOnInit() {
+    $("#error").hide();
     this.ngDoCheck();
     // this.socios = this.getSocios();
     this.getNombres();
@@ -56,16 +60,22 @@ export class SociosComponent implements OnInit {
   }
   getNombres() {
     this._operaciones.getNombres().subscribe(res => {
-      let datos = res.data;
-      this.nombres = new Array();
-      $.each(datos, (i, nombre) => {
-        let nom = new Nombre(nombre.numero, nombre.nombre);
-        this.nombres.push(nom);
-      });
-      this.nombresBack = this.nombres.slice(0);
-      this.paginacion();
+      if(res.code == 200){
+        let datos = res.data;
+        this.nombres = new Array();
+        $.each(datos, (i, nombre) => {
+          let nom = new Nombre(nombre.numero, nombre.nombre, nombre.domiciliado);
+          this.nombres.push(nom);
+        });
+        this.nombresBack = this.nombres.slice(0);
+        this.paginacion();
+      }else{
+        this.error = new Error('No se encuentran nombres');
+        this.handleError(this.error);
+      }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
 
@@ -79,10 +89,16 @@ export class SociosComponent implements OnInit {
   }
   addSocio() {
     this._operaciones.getSocioSig().subscribe(res => {
-      let numero = JSON.parse(res.data);
-      this._router.navigate(['socios-det', numero['siguiente'], 'nuevo']);
+      if(res.code == 200){
+        let numero = JSON.parse(res.data);
+        this._router.navigate(['socios-det', numero['siguiente'], 'nuevo']);
+      }else{
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
 
   }
@@ -93,43 +109,47 @@ export class SociosComponent implements OnInit {
    * @return {[type]}            [description]
    */
   buscarNumero(evento) {
-    let obj = {target:{value: "-1"}};
-    this.setPaginacion(obj);
+    this.paginacionOff = true;
     this.nombre.nombre = null;
     let stringNumero = evento.target.value;
     if (stringNumero != "") {
-      this.nombres = this.nombresBack.slice(0);
-      var encontrados = this.nombres.filter(nombre =>
+      this.nombres = this.nombresBack.filter(nombre =>
         nombre.numero.toString().toLowerCase().includes(stringNumero.toLowerCase())
       );
-      this.nombres = encontrados;
     } else {
+      this.paginacionOff = false;
       this.nombres = this.nombresBack.slice(0);
+      this.domiciliados = false;
     }
     this.paginacion();
   }
 
   buscarNombre(evento) {
-    let obj = {target:{value: "-1"}};
-    this.setPaginacion(obj);
-    // this.selectPag.target.value = "-1";
+    this.paginacionOff = true;
     this.nombre.numero = null;
     let stringNombre = evento.target.value;
     if (stringNombre != "") {
-      this.nombres = this.nombresBack.slice(0);
-      var encontrados = this.nombres.filter(nombre =>
-        nombre.nombre.toLowerCase().includes(stringNombre.toLowerCase())
-      );
-      this.nombres = encontrados;
+      this.nombres = this.nombresBack.filter(nombre =>
+      nombre.nombre.toLowerCase().includes(stringNombre.toLowerCase()));
+
     } else {
+      this.paginacionOff = false;
       this.nombres = this.nombresBack.slice(0);
+      this.domiciliados = false;
     }
     this.paginacion();
   }
   paginacion() {
     this.paginas = Math.ceil(this.nombres.length / this.tamPagina);
     this.arrPaginas = Array(this.paginas).fill(0).map((x, i) => i);
-    this.nombresPaginados = this.nombres.slice(((this.pagina - 1) * this.tamPagina), (this.pagina * this.tamPagina));
+    if(this.paginacionOff){
+      this.nombresPaginados = this.nombres;
+      if(this.domiciliados){
+        this.filtraDomiciliados();
+      }
+    }else{
+      this.nombresPaginados = this.nombres.slice(((this.pagina - 1) * this.tamPagina), (this.pagina * this.tamPagina));
+    }
   }
   paginaNext() {
     if (this.pagina < this.paginas) {
@@ -158,10 +178,20 @@ export class SociosComponent implements OnInit {
   }
   exportaCsv(){
     let exportData = [
-      // {remesa: this.remesa.concepto},
       { data: JSON.stringify(this.nombresPaginados) }
     ];
     this._ng2Csv.download(this.nombresPaginados, 'socios.csv', undefined, GLOBAL.csvConf);
 
+  }
+  filtraDomiciliados(){
+    if(this.domiciliados){
+      this.nombresPaginados = this.nombres.filter(nombre=> nombre.domiciliado == 1);
+    }else{
+      this.paginacion();
+    }
+  }
+  handleError(error){
+    console.log(error.message);
+    $("#error").show().delay(5000).fadeOut();
   }
 }
