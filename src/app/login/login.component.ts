@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit,  ErrorHandler {
       if(res.code == 200){
         let obj = res.data;
         // console.log(obj);
-        localStorage.setItem("usuario", obj)
+        localStorage.setItem("usuario", obj);
         // localStorage.setItem("usuario",obj.name);
         // localStorage.setItem("email", obj.email);
         this._router.navigate(["/"]);

@@ -1,4 +1,4 @@
-import { Component, OnInit,DoCheck } from '@angular/core';
+import { Component, OnInit,DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { OperacionesService } from '../services/operaciones.service';
 import { Socio } from '../models/socios.model';
@@ -10,7 +10,7 @@ declare var $;
   templateUrl: './socios-det.component.html',
   styleUrls: ['./socios-det.component.css']
 })
-export class SociosDetComponent implements OnInit {
+export class SociosDetComponent implements OnInit, ErrorHandler {
   public titulo: string;
   public num: number;
   public tipo: string;
@@ -21,6 +21,9 @@ export class SociosDetComponent implements OnInit {
   public mostrarSelectLocal: boolean;
   public es: any;
   public arrayLocalidades: any[];
+  public muestraTelAdd:boolean;
+  public error:Error;
+  public exito:string;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
@@ -34,23 +37,28 @@ export class SociosDetComponent implements OnInit {
     this.es = GLOBAL.es;
     this.mostrarSelectLocal = false;
     this.arrayLocalidades = new Array();
+    this.telefono = new Telefono(null, this.socio.numero, null, true, '', '');
+    this.muestraTelAdd = false;
+    this.error = new Error();
+    this.exito = '';
   }
 
   ngOnInit() {
+    $("#error").hide();
+    $("#exito").hide();
     this.ngDoCheck();
     this._route.params.forEach(params => {
       this.num = params['num'];
       this.tipo = params['edit'];
       if (this.tipo === 'editar') {
-        this.bloqueo = false;
-      } else if (this.tipo === 'ver') {
         this.bloqueo = true;
-      } else if (this.tipo === 'nuevo') {
+      } else if (this.tipo === 'ver') {
         this.bloqueo = false;
+      } else if (this.tipo === 'nuevo') {
+        this.bloqueo = true;
       }
     });
     this.getSocio();
-    setTimeout(() => { this.setDisabled() }, 500);//meto algo de retardo para bloquear todos los inputs
   }
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
@@ -60,35 +68,37 @@ export class SociosDetComponent implements OnInit {
   }
 
   getSocio() {
-    this._operaciones.getSocio(this.num).subscribe(res => {
-      if (res.code === 200) {
-        let datos = JSON.parse(res.data);
-        if (datos.domiciliado == '0' || datos.domiciliado == false) {
-          datos.domiciliado = false;
+    if(this.tipo != 'nuevo'){
+      this._operaciones.getSocio(this.num).subscribe(res => {
+        if (res.code === 200) {
+          let datos = JSON.parse(res.data);
+          if (datos.domiciliado == '0' || datos.domiciliado == false) {
+            datos.domiciliado = false;
+          } else {
+            datos.domiciliado = true;
+          }
+          if (datos.no_activo == '0' || datos.no_activo == false) {
+            datos.no_activo = false;
+          } else {
+            datos.no_activo = true;
+          }
+          this.socio = new Socio(parseInt(datos.numero), datos.nombre, datos.apellido1,
+            datos.apellido2, datos.domiciliado, datos.DNI, datos.direccion,
+            datos.cod_postal, datos.cod_prov, datos.alta, datos.no_activo, datos.baja,
+            datos.propiedad, datos.observaciones);
+          this.getTelefonos();
+          this.socio.localidad = datos.poblacion;
+          this.getProvincia();
         } else {
-          datos.domiciliado = true;
+          this.error = new Error(res.message);
+          this.handleError(this.error);
         }
-        if (datos.no_activo == '0' || datos.no_activo == false) {
-          datos.no_activo = false;
-        } else {
-          datos.no_activo = true;
-        }
-        this.socio = new Socio(parseInt(datos.numero), datos.nombre, datos.apellido1,
-          datos.apellido2, datos.domiciliado, datos.DNI, datos.direccion,
-          datos.cod_postal, datos.cod_prov, datos.alta, datos.no_activo, datos.baja,
-          datos.propiedad, datos.observaciones);
-        this.getTelefonos();
-        this.socio.localidad = datos.poblacion;
-        this.getProvincia();
-        // if(this.socio.localidad == null || this.socio.localidad == "" || this.socio.localidad == undefined){
-        //   this.getLocalidad();
-        // }
-      } else {
-        //gestionar error
-      }
-    }, err => {
-      console.log(<any>err);
-    });
+      }, err => {
+        this.error = err;
+        this.handleError(this.error);
+      });
+    }
+
   }
   /**
    * Obtiene los teléfonos del socio y los incluye en el objeto socio.
@@ -112,9 +122,12 @@ export class SociosDetComponent implements OnInit {
       } else {
         this.telefonos = new Array();
         this.socio.telefonos = this.telefonos;
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     });
   }
   getProvincia() {
@@ -123,10 +136,12 @@ export class SociosDetComponent implements OnInit {
         let datos = JSON.parse(res.data);
         this.socio.provincia = datos.provincia;
       } else {
-        //gestionar error
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   getLocalidad() {
@@ -146,78 +161,100 @@ export class SociosDetComponent implements OnInit {
           this.getProvincia();
         }
       } else {
-        //gestionar error
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   cambiaLocalidad(event) {
     this.socio.localidad = event.target.value;
   }
-  onSubmit() {
-
-  }
   addSocio() {
     this.socio.numero = this.num;
     this._operaciones.setSocio(this.socio).subscribe(res => {
       if (res.code == 200) {
-        console.log(res.message);
+        this.msgExito('Socio añadido correctamente');
         this.setDisabled();
         this._router.navigate(['socios-det', this.num, 'editar']);
       } else {
-        console.log(res.message);
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   updateSocio() {
     this._operaciones.setSocioActualiza(this.socio).subscribe(res => {
       if (res.code == 200) {
-        console.log(res.message);
+        this.msgExito('Socio actualizado correctamente');
         this.setDisabled();
       } else {
-        console.log(res.message);
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   setDisabled() {
-    /*$("input").prop('disabled', this.bloqueo);
-    $("textarea").prop('disabled', this.bloqueo);*/
     this.bloqueo = !this.bloqueo;
   }
   setTelefono() {
-    let tel = new Telefono(null, this.socio.numero, null, true, '', '');
-    this.socio.telefonos.push(tel);
-    /*
-    let tel = new Telefono(null, this.socio.numero, 666666666, true, '', '');
-    this._operaciones.setTelefono(tel).subscribe(res=>{
+    this.telefono.socio = this.num;
+    this._operaciones.setTelefono(this.telefono).subscribe(res=>{
       if(res.code === 200){
+        this.msgExito('Teléfono añadido correctamente');
         this.socio.telefonos.splice(0, this.socio.telefonos.length);
         this.getTelefonos();
+        this.limpiaTel();
+        this.muestraTelAdd = false;
       }else{
-        //gestionar error
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     });
-*/
+  }
+  limpiaTel(){
+    this.telefono = new Telefono(null, this.socio.numero, null, true, '', '');
+  }
+  verTelefonoAdd(){
+    this.limpiaTel();
+    this.muestraTelAdd = !this.muestraTelAdd;
   }
 
   deleteTelefono(evento) {
     const id = evento.target.value;
     this._operaciones.deleteTelefono(id).subscribe(res => {
       if (res.code === 200) {
+        this.msgExito('Teléfono borrado correctamente');
         this.socio.telefonos.splice(0, this.socio.telefonos.length);
         this.getTelefonos();
+      }else{
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
-
     }, err => {
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
-
+  handleError(error) {
+     console.log(error.message);
+     $("#error").show().delay(5000).fadeOut();
+     // IMPORTANT: Rethrow the error otherwise it gets swallowed
+     //throw error;
+  }
+  msgExito(mensaje:string){
+    this.exito = mensaje;
+    $("#exito").show().delay(5000).fadeOut();
+  }
 }

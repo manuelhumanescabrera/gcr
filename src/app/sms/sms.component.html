@@ -21,14 +21,14 @@
   <!--  -->
   <br>
   <div class="row">
-    <div class="col-md-2">
-      <button type="button" class="btn btn-success btn-block" name="enviar" (click)="enviaSMS()" [disabled]="arraySms.length==0">Enviar SMS</button>
+    <div class="col-md-3 noPadding">
+      <button type="button" class="btn btn-success btn-block btn-md" name="enviar" (click)="enviaSMS()" [disabled]="arraySms.length==0">Enviar SMS</button>
     </div>
-    <div class="col-md-2">
-      <button type="button" class="btn btn-warning btn-block" name="limpiar" (click)="limpiaDatos()" [disabled]="arraySms.length==0">Limpiar</button>
+    <div class="col-md-3 noPadding">
+      <button type="button" class="btn btn-warning btn-block btn-md" name="limpiar" (click)="limpiaDatos()" [disabled]="arraySms.length==0">Limpiar</button>
     </div>
-    <div class="col-md-2">
-      <div *ngIf="!haySms" class="fileUpload btn btn-primary btn-block" (change)="cargaFichero($event)">
+    <div class="col-md-3 noPadding">
+      <div *ngIf="!haySms" class="fileUpload btn btn-primary btn-block btn-md" (change)="cargaFichero($event)">
         <span>Subir fichero</span>
         <input type="file" class="upload" id="fichero" />
       </div>

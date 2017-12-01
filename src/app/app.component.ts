@@ -12,6 +12,7 @@ declare var $;
 })
 export class AppComponent implements OnInit, DoCheck {
   public nombre:string;
+  public nombreAbr:string;
   public login: boolean;
   public usuario: User;
   // public email: string;
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit, DoCheck {
     private _login: LoginService
   ){
     this.nombre = GLOBAL.nombre;
+    this.nombreAbr = GLOBAL.nombreAbr;
     this.login = false;
     this.usuario = new User("", "", "", "", "", "");
     // this.email = '';

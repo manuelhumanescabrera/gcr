@@ -4,6 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Peticion } from '../models/peticion.model';
 import { Nombre } from '../models/nombre.model';
 import { Remesa } from '../models/remesa.model';
+import { Ng2CsvService } from 'ng2csv/Ng2Csv.service';
+import { CsvConfiguration } from 'ng2csv/CsvConfiguration';
+import { GLOBAL } from '../services/global.service';
 declare var $;
 @Component({
   selector: 'app-peticiones',
@@ -28,7 +31,8 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
+    private _ng2Csv: Ng2CsvService
   ) {
     this.titulo = 'GESTIÓN DE PETICIONES';
     this.peticion = new Peticion(null, null, "", null);
@@ -174,14 +178,14 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   backPeticion(evento) {
     this.back = evento;
   }
-  selectAllCheck() {
-    this.selectAll = !this.selectAll;
-    if (this.selectAll) {
-      $(".check-peticiones").prop('checked', true);;
-    } else {
-      $(".check-peticiones").prop('checked', false);;
-    }
-  }
+  // selectAllCheck() {
+  //   this.selectAll = !this.selectAll;
+  //   if (this.selectAll) {
+  //     $(".check-peticiones").prop('checked', true);;
+  //   } else {
+  //     $(".check-peticiones").prop('checked', false);;
+  //   }
+  // }
   deleteAll() {
     $.each($(".check-peticiones"), (i, pet) => {
       this.eliminar(pet, i, false);
@@ -210,6 +214,13 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   }
   salirGenRemesa(){
     this.inputDatosRem = false;
+  }
+  exportaCsv(){
+    let exportData = [
+      { data: JSON.stringify(this.peticiones) }
+    ];
+    this._ng2Csv.download(this.peticiones, 'peticiones.csv', undefined, GLOBAL.csvConf);
+
   }
   handleError(error) {
     console.log(error.message);

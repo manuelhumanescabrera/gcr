@@ -1,5 +1,6 @@
 export const GLOBAL = {
-  nombre: "Comunidad de regantes pozo la luna",
+  nombre: "Comunidad de regantes Pozo la Luna",
+  nombreAbr: "C.R Pozo la luna",
   url: "https://jmmanzano.es",
   urlBackend: "https://jmmanzano.es/proyecto/php/index.php",
   urlLogin: "https://jmmanzano.es/proyecto/php/login.php",
