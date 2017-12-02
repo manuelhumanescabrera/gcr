@@ -1,8 +1,11 @@
 import { Component, OnInit, DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Ng2CsvService } from 'ng2csv/Ng2Csv.service';
+import { CsvConfiguration } from 'ng2csv/CsvConfiguration';
 import { Socio } from '../models/socios.model';
 import { Nombre } from '../models/nombre.model';
 import { OperacionesService } from '../services/operaciones.service';
+import { GLOBAL } from '../services/global.service';
 declare var $;
 
 @Component({
@@ -20,7 +23,8 @@ export class RecibosComponent implements OnInit, ErrorHandler {
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
-    private _router:Router
+    private _router:Router,
+    private _ng2Csv: Ng2CsvService
   ) {
     this.titulo = 'GESTIÓN DE RECIBOS';
     this.nombres = new Array();
@@ -104,6 +108,9 @@ export class RecibosComponent implements OnInit, ErrorHandler {
     } else {
       this.nombres = this.nombresBack.slice(0);
     }
+  }
+  exportaCsv(){
+    this._ng2Csv.download(this.nombres, 'socios_pendientes.csv', undefined, GLOBAL.csvConf);
   }
   handleError(error){
     console.log(error.message);

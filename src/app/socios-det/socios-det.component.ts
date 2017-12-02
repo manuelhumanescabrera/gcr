@@ -1,8 +1,11 @@
 import { Component, OnInit,DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Ng2CsvService } from 'ng2csv/Ng2Csv.service';
+import { CsvConfiguration } from 'ng2csv/CsvConfiguration';
 import { OperacionesService } from '../services/operaciones.service';
 import { Socio } from '../models/socios.model';
 import { Telefono } from '../models/telefono.model';
+import {Parcela} from '../models/parcela.model';
 import { GLOBAL } from '../services/global.service';
 declare var $;
 @Component({
@@ -24,11 +27,12 @@ export class SociosDetComponent implements OnInit, ErrorHandler {
   public muestraTelAdd:boolean;
   public error:Error;
   public exito:string;
+  public parcelas:Parcela[];
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
     private _router: Router,
-
+    private _ng2Csv: Ng2CsvService
   ) {
     this.titulo = 'Editar socio número: ';
     this.socio = new Socio(null, '', '', '', false, '', '', null, null, '', false, '', null, '');
@@ -41,6 +45,7 @@ export class SociosDetComponent implements OnInit, ErrorHandler {
     this.muestraTelAdd = false;
     this.error = new Error();
     this.exito = '';
+    this.parcelas = new Array();
   }
 
   ngOnInit() {
@@ -87,6 +92,7 @@ export class SociosDetComponent implements OnInit, ErrorHandler {
             datos.cod_postal, datos.cod_prov, datos.alta, datos.no_activo, datos.baja,
             datos.propiedad, datos.observaciones);
           this.getTelefonos();
+          this.getParcelas();
           this.socio.localidad = datos.poblacion;
           this.getProvincia();
         } else {
@@ -99,6 +105,27 @@ export class SociosDetComponent implements OnInit, ErrorHandler {
       });
     }
 
+  }
+  /**
+   * Obtiene los teléfonos del socio y los incluye en el objeto socio.
+   * @method getTelefonos
+   * @return {[type]}     [description]
+   */
+  getParcelas() {
+    this._operaciones.getParcelas(this.num).subscribe(res => {
+      if (res.code == 200) {
+        this.parcelas = JSON.parse(res.data);
+        this.socio.parcelas = this.parcelas;
+      } else {
+        this.parcelas = new Array();
+        this.socio.parcelas = this.parcelas;
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
+    }, err => {
+      this.error = err;
+      this.handleError(this.error);
+    });
   }
   /**
    * Obtiene los teléfonos del socio y los incluye en el objeto socio.
@@ -246,6 +273,14 @@ export class SociosDetComponent implements OnInit, ErrorHandler {
       this.error = err;
       this.handleError(this.error);
     })
+  }
+  exportaCsv(){
+      let socios = new Array();
+      socios.push(this.socio);
+      socios.push(this.socio.telefonos);
+      socios.push(this.socio.parcelas);
+    this._ng2Csv.download(socios, this.socio.numero+'.csv', undefined, GLOBAL.csvConf);
+
   }
   handleError(error) {
      console.log(error.message);

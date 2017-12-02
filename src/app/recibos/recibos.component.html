@@ -17,6 +17,11 @@
       </div>
     </div>
   </div>
+  <div *ngIf="nombres.length > 0" class="row">
+    <div class="col-sm-3">
+      <button class="btn btn-primary btn-md btn-block noPadding" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
+    </div>
+  </div>
   <hr>
     <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
   <table *ngIf="nombres.length > 0" class="table table-striped table-bordered">

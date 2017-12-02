@@ -201,14 +201,37 @@
           </div>
         </div>
       </div>
+      <!-- parcelas -->
+      <div style="clear:both">
+      <div *ngIf="parcelas.length > 0" class="col-md-12">
+        <div *ngIf="tipo != 'nuevo'" class="form-group">
+          <label class="label label-primary">Parcelas:</label>
+          <table class="table table-striped table-bordered">
+            <tr>
+              <th>Municipio</th>
+              <th>Polígono</th>
+              <th>Parcela</th>
+              <th>Referencia catastral</th>
+            </tr>
+            <tr *ngFor="let parcela of socio.parcelas">
+              <td>{{parcela.municipio}}</td>
+              <td>{{parcela.masa}}</td>
+              <td>{{parcela.parcela}}</td>
+              <td>{{parcela.refcat}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
       <!-- Botón de actualizar -->
       <div style="clear:both">
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div class="form-group">
             <button type="button" name="editar" class="btn btn-warning btn-block" (click)="setDisabled()">Editar</button>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div *ngIf="this.tipo == 'editar'" class="form-group">
             <input class="btn btn-success btn-block" type="submit" name="enviar" value="Enviar" (click)="updateSocio()" [disabled]="!formSocioEdit.form.valid">
           </div>
@@ -216,10 +239,13 @@
             <input class="btn btn-success btn-block" type="submit" name="enviar" value="Añadir" (click)="addSocio()" [disabled]="!formSocioEdit.form.valid">
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div class="form-group">
             <button type="button" name="editar" class="btn btn-primary btn-block" [routerLink]="['/socios']">Volver</button>
           </div>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-primary btn-block" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
         </div>
       </div>
     </div>

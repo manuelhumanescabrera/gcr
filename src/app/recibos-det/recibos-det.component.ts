@@ -1,9 +1,11 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ErrorHandler } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {Recibo} from '../models/recibo.model';
 import { Socio } from '../models/socios.model';
 import { Nombre } from '../models/nombre.model';
 import { OperacionesService } from '../services/operaciones.service';
+import { Ng2CsvService } from 'ng2csv/Ng2Csv.service';
+import { CsvConfiguration } from 'ng2csv/CsvConfiguration';
 import {GLOBAL} from '../services/global.service';
 declare var $;
 
@@ -12,7 +14,7 @@ declare var $;
   templateUrl: './recibos-det.component.html',
   styleUrls: ['./recibos-det.component.css']
 })
-export class RecibosDetComponent implements OnInit {
+export class RecibosDetComponent implements OnInit, ErrorHandler {
   public titulo:string;
   public num:number;
   public recibo: Recibo;
@@ -21,13 +23,12 @@ export class RecibosDetComponent implements OnInit {
   public cantidad: number;
   public editar: boolean;
   public es:any;
-  /**/
-
-  /**/
+  public error:Error;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
-    private _router:Router
+    private _router:Router,
+    private _ng2Csv: Ng2CsvService
   ) {
     this.titulo = 'RECIBOS PENDIENTES: ';
     this.recibos = new Array();
@@ -36,9 +37,11 @@ export class RecibosDetComponent implements OnInit {
     this.editar = true;
     this.recibo = new Recibo(null, null, '', null, '' ,false,'', '' );
     this.es = GLOBAL.es;
+    this.error = new Error();
    }
 
   ngOnInit() {
+    $("#error").hide();
     this.ngDoCheck();
     this._route.params.forEach(params => {
       this.num = params['num'];
@@ -58,19 +61,26 @@ export class RecibosDetComponent implements OnInit {
       if(res.code === 200){
       let nom = JSON.parse(res.data);
         this.nombre = new Nombre (this.num, nom.nombre, false);
-      }//dirigir a error
+      }else{
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
     }, err=>{
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   getRecibos(){
     this._operaciones.getRecibosPendientes(this.num).subscribe(res=>{
       if(res.code === 200){
         this.recibos = res.data;
+      }else{
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
-      //redireccionar a error
     }, err=>{
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   getCantidad(){
@@ -78,9 +88,13 @@ export class RecibosDetComponent implements OnInit {
       if(res.code === 200){
         let cant = JSON.parse(res.data)
         this.cantidad = cant.pendiente;
+      }else{
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err=>{
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   consultarRecibo(event){
@@ -99,10 +113,12 @@ export class RecibosDetComponent implements OnInit {
         this.recibo = new Recibo(rec.id, rec.numero, rec.nombre, rec.euros, rec.concepto ,rec.pagado, rec.fecha_pago, rec.observaciones );
         this.editar = !this.editar;
       }else{
-        //meter error
+        this.error = new Error(res.message);
+        this.handleError(this.error);
       }
     }, err =>{
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     })
   }
   guardarRecibo(){
@@ -110,9 +126,13 @@ export class RecibosDetComponent implements OnInit {
      if(res.code == 200){
        this.getRecibos();
        this.getCantidad();
+     }else{
+       this.error = new Error(res.message);
+       this.handleError(this.error);
      }
     }, err=>{
-      console.log(<any>err);
+      this.error = err;
+      this.handleError(this.error);
     });
     this.editar = !this.editar;
   }
@@ -122,5 +142,12 @@ export class RecibosDetComponent implements OnInit {
   salirEditar(){
     this.editar = !this.editar;
     this.recibo = new Recibo(null, null, '', null, '' ,false,'', '' );
+  }
+  exportaCsv(){
+    this._ng2Csv.download(this.recibos, 'recibos_'+this.nombre.numero+'.csv', undefined, GLOBAL.csvConf);
+  }
+  handleError(error){
+    console.log(error.message);
+    $("#error").show().delay(5000).fadeOut();
   }
 }

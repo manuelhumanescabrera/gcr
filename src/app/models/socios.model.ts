@@ -1,8 +1,10 @@
 import {Telefono} from './telefono.model';
+import {Parcela} from './parcela.model';
 export class Socio{
   public provincia: string;
   public localidad: string;
   public telefonos: Telefono[];
+  public parcelas: Parcela[];
   constructor(
     public numero:number,
     public nombre:string,

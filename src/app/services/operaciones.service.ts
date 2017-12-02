@@ -128,6 +128,12 @@ generaRemesa
     return this._http.get(this.url + '/cantidad-pendiente/' + id).map(res => res.json());
   }
   /*
+  Obtiene un array con las parcelas de teléfono de un socio.
+   */
+  getParcelas(id: number) {
+    return this._http.get(this.url + '/socio_parcelas/' + id).map(res => res.json());
+  }
+  /*
   Obtiene un array con los números de teléfono de un socio.
    */
   getTelefonos(id: number) {

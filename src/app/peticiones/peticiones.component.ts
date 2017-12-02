@@ -126,9 +126,9 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   addPeticion() {
     this._operaciones.setPeticion(this.peticion).subscribe(
       res => {
+        this.peticion = new Peticion(null, null, "", null);
         if (res.code == 200) {
           this.getPeticiones();
-          this.peticion = new Peticion(null, null, "", null);
         } else {
           this.error = new Error(res.message);
           this.handleError(this.error);
@@ -178,18 +178,26 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   backPeticion(evento) {
     this.back = evento;
   }
-  // selectAllCheck() {
-  //   this.selectAll = !this.selectAll;
-  //   if (this.selectAll) {
-  //     $(".check-peticiones").prop('checked', true);;
-  //   } else {
-  //     $(".check-peticiones").prop('checked', false);;
-  //   }
-  // }
+
   deleteAll() {
-    $.each($(".check-peticiones"), (i, pet) => {
-      this.eliminar(pet, i, false);
-    })
+    let err:boolean = false;
+    for (let pet of this.peticiones){
+      this._operaciones.deletePeticion(pet.id).subscribe(res => {
+        if (res.code == 200) {
+          // this.peticiones.splice(pos, 1);
+          this.peticiones = new Array();
+          this.getPeticiones();
+        } else {
+          err = true;
+        }
+      }, err => {
+        err = true
+      });
+      if(err){
+        this.error = new Error('Ha habido problemas eliminando peticiones');
+        this.handleError(this.error);
+      }
+    }
     this.peticiones = new Array();
   }
   muestraInputDatosRem() {
