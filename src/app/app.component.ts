@@ -1,8 +1,8 @@
 import { Component, DoCheck, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { LoginService } from './services/login.service';
-import {GLOBAL} from './services/global.service';
-import {User} from './models/user.model';
+import { GLOBAL } from './services/global.service';
+import { User } from './models/user.model';
 declare var $;
 
 @Component({
@@ -11,49 +11,51 @@ declare var $;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, DoCheck {
-  public nombre:string;
-  public nombreAbr:string;
+  public nombre: string;
+  public nombreAbr: string;
   public login: boolean;
   public usuario: User;
   // public email: string;
   constructor(
     private _login: LoginService
-  ){
+  ) {
     this.nombre = GLOBAL.nombre;
     this.nombreAbr = GLOBAL.nombreAbr;
     this.login = false;
     this.usuario = new User("", "", "", "", "", "");
     // this.email = '';
   }
-  ngOnInit(){
+  ngOnInit() {
     this.ngDoCheck();
     $(document).ready(function() {
       $('[data-toggle=offcanvas]').click(function() {
-    $('.row-offcanvas').toggleClass('active');
-  });
-});
+        $('.row-offcanvas').toggleClass('active');
+      });
+      $('.link').click(function() {
+        $('.row-offcanvas').removeClass('active');
+      });
+    });
   }
-  ngDoCheck(){
+  ngDoCheck() {
     this.usuario = JSON.parse(localStorage.getItem('usuario'));
     // this.email = localStorage.getItem('email') || "no";
-    if(this.usuario == null){
+    if (this.usuario == null) {
       this.login = false;
-    }else{
+    } else {
       this.login = true;
     }
   }
-  status(){
-    this._login.status().subscribe(res=>{
+  status() {
+    this._login.status().subscribe(res => {
       console.log(res);
-    }, err=>{
+    }, err => {
       console.log(err);
     });
   }
-  signout(){
-    this._login.signout().subscribe(res=>{
-      console.log(res);
+  signout() {
+    this._login.signout().subscribe(res => {
       localStorage.clear();
-    }, err=>{
+    }, err => {
       console.log(err);
     });
   }

@@ -8,8 +8,8 @@
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
            </button>
-        <a class="navbar-brand ocultar">{{nombre | uppercase}}</a>
-        <a class="navbar-brand mostrar">{{nombreAbr | uppercase}}</a>
+        <a [routerLink]="['/']" class="navbar-brand ocultar">{{nombre | uppercase}}</a>
+        <a [routerLink]="['/']" class="navbar-brand mostrar">{{nombreAbr | uppercase}}</a>
       </div>
       <ul *ngIf="login" class="nav navbar-nav navbar-right ocultar">
         <li class="dropdown">
@@ -58,20 +58,20 @@
     <div class="row row-offcanvas row-offcanvas-left">
       <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
         <ul *ngIf="login" class="nav">
-          <li [routerLink]="['/socios']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Socios</a></li>
-          <li [routerLink]="['/peticiones']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-hourglass"></span>Peticiones</a></li>
-          <li [routerLink]="['/remesas']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-list"></span>Remesas</a></li>
-          <li [routerLink]="['/recibos']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-euro"></span>Recibos</a></li>
-          <li [routerLink]="['/ficheros']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-file"></span>Ficheros</a></li>
-          <li [routerLink]="['/sms']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-phone"></span>SMS</a></li>
+          <li class="link" [routerLink]="['/socios']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Socios</a></li>
+          <li class="link" [routerLink]="['/peticiones']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-hourglass"></span>Peticiones</a></li>
+          <li class="link" [routerLink]="['/remesas']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-list"></span>Remesas</a></li>
+          <li class="link" [routerLink]="['/recibos']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-euro"></span>Recibos</a></li>
+          <li class="link" [routerLink]="['/ficheros']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-file"></span>Ficheros</a></li>
+          <li class="link" [routerLink]="['/sms']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-phone"></span>SMS</a></li>
           <li class="nav-divider"></li>
-          <li [routerLink]="['/configuraciones']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-cog"></span>Configuración</a></li>
-          <li class="nav-divider mostrar"></li>
-          <!-- <li [routerLink]="['/register']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Registro</a></li> -->
+          <li class="link" [routerLink]="['/configuraciones']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-cog"></span>Configuración</a></li>
+          <li class="link" class="nav-divider mostrar"></li>
+          <li class="link" [routerLink]="['/register']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-user"></span>Registro</a></li>
           <!-- <li [routerLink]="['/login']" [routerLinkActive]="['active']"><a><span class="glyphicon glyphicon-log-in" ></span>Login</a></li> -->
           <!-- <li class="nav-divider"></li>
           <li (click)="status()"><a><span class="glyphicon glyphicon-user"></span>Status</a></li>-->
-          <li class="mostrar" (click)="signout()"><a><span class="glyphicon glyphicon-log-in" ></span>Cerrar sesion</a></li>
+          <li class="link" class="mostrar" (click)="signout()"><a><span class="glyphicon glyphicon-log-in" ></span>Cerrar sesion</a></li>
         </ul>
       </div>
       <div class="col-xs-12 col-sm-10">

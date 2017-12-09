@@ -1,23 +1,24 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ErrorHandler } from '@angular/core';
 import { Cargo } from '../models/cargo.model';
 import { Recibo } from '../models/recibo.model';
 import { User } from '../models/user.model';
 import { OperacionesService } from '../services/operaciones.service';
 import { Router, ActivatedRoute } from '@angular/router';
-
+declare var $;
 @Component({
   selector: 'app-ficheros',
   templateUrl: './ficheros.component.html',
   styleUrls: ['./ficheros.component.css']
 })
-export class FicherosComponent implements OnInit {
+export class FicherosComponent implements OnInit, ErrorHandler, DoCheck {
   public titulo: string;
   public cargo: Cargo;
   public cargos: Cargo[];
   public tipoFichero: string;
   public cadena: string;
   public usuario:User;
-
+  public error: Error;
+  public exito:string;
   constructor(
     private _operaciones:OperacionesService,
     private _route: ActivatedRoute,
@@ -26,14 +27,18 @@ export class FicherosComponent implements OnInit {
     this.titulo = 'GESTIÓN DE FICHEROS';
     this.cargos = new Array();
     this.usuario = new User("", "", "", "", "", "");
+    this.error = new Error();
+    this.exito = '';
   }
 
   ngOnInit() {
     this.ngDoCheck();
+    $("#error").hide();
+    $("#exito").hide();
   }
   ngDoCheck() {
-    this.usuario = JSON.parse(localStorage.getItem('usuario'));
-    if(this.usuario == null){
+    let usuario = localStorage.getItem('usuario') || "no";
+    if (usuario == "no") {
       this._router.navigate(['login']);
     }
   }
@@ -81,12 +86,13 @@ export class FicherosComponent implements OnInit {
       if (coma.length > tabulador.length) {
         caracter = ",";
       }
-      console.log(caracter);
       for (let i = 1; i < linea.length - 1; i++) {
         let texto = linea[i].split(caracter);
-        console.log(texto);
         this.cargos.push(new Cargo(parseInt(texto[0]), texto[1], texto[3], texto[2], null));
       }
+    }else{
+      this.error = new Error('Fichero de datos no soportado.');
+      this.handleError(this.error);
     }
   }
   procesarDevoluciones(){
@@ -95,14 +101,35 @@ export class FicherosComponent implements OnInit {
       let recibo = new Recibo(null,cr.numero,cr.nombre,parseFloat(cr.cantidad.replace(",",".")),cr.concepto,false,null,'');
       this._operaciones.setInsertaRecibo(recibo).subscribe(res=>{
         if(res.code == 200){
-          console.log(res.message);
+          this.handleExito(res.message);
+        }else{
+          this.error = new Error(res.message);
+          this.handleError(this.error);
         }
       },err => {
-        console.log(<any>err);
+        this.error = err;
+        this.handleError(this.error);
       })
     }
   }
   limpiaDatos() {
     this.cargos = new Array();
+  }
+  sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  async handleExito(mensaje){
+    this.exito = mensaje;
+    $("#exito").show();
+    this.sleep(5000);
+    $("#exito").hide();
+    this.exito = '';
+  }
+  async handleError(error) {
+     console.log(error.message);
+     $("#error").show();
+     await this.sleep(5000);
+     $("#error").hide();
+     this.error = new Error();
   }
 }

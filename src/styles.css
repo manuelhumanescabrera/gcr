@@ -70,16 +70,15 @@ body {
         float:left !important;
         margin-left: 10px;
      }
-    .ocultar{
-      display: none;
+
+     .ocultar {
+       display: none;
        visibility: hidden;
-    }
+     }
 
 }
 @media screen and (min-width: 767px) {
   .mostrar{
-    /*display: block;
-     visibility: visible;*/
      display: none;
     visibility: hidden;
 

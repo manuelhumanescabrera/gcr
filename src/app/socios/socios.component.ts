@@ -12,7 +12,7 @@ declare var $;
   templateUrl: './socios.component.html',
   styleUrls: ['./socios.component.css']
 })
-export class SociosComponent implements OnInit, ErrorHandler {
+export class SociosComponent implements OnInit, ErrorHandler, DoCheck {
   public titulo: string;
   public nombres: Nombre[];
   public nombresPaginados: Nombre[];
@@ -190,8 +190,14 @@ export class SociosComponent implements OnInit, ErrorHandler {
       this.paginacion();
     }
   }
-  handleError(error){
-    console.log(error.message);
-    $("#error").show().delay(5000).fadeOut();
+  async handleError(error) {
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+     console.log(error.message);
+     $("#error").show();
+     await sleep(5000);
+     $("#error").hide();
+     this.error = new Error();
   }
 }

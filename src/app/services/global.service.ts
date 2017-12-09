@@ -1,7 +1,7 @@
 export const GLOBAL = {
   nombre: "Comunidad de regantes Pozo la Luna",
   nombreAbr: "C.R Pozo la luna",
-  url: "https://jmmanzano.es",
+  url: "https://jmmanzano.es/proyecto",
   urlBackend: "https://jmmanzano.es/proyecto/php/index.php",
   urlLogin: "https://jmmanzano.es/proyecto/php/login.php",
   urlConfig: "https://jmmanzano.es/proyecto/php/config.php",
@@ -20,5 +20,5 @@ export const GLOBAL = {
     includeHeaderLine: true
     }
   // url: "http://192.168.1.36",
-  // urlBackend: "https://jmmanzano.es/proyecto/php/index.php"
+  // urlBackend: "http://proyecto.com/proyecto/php/index.php"
 }

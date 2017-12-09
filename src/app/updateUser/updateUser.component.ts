@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ErrorHandler, DoCheck } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user.model';
-
+declare var $;
 
 @Component({
   selector: 'app-updateUser',
   templateUrl: './updateUser.component.html',
   styleUrls: ['./updateUser.component.css']
 })
-export class UpdateUserComponent implements OnInit {
+export class UpdateUserComponent implements OnInit, ErrorHandler, DoCheck {
 
   public user: User;
   public titulo: string;
+  public error: Error;
+  public exito:string;
 
   constructor(
     private _route: ActivatedRoute,
@@ -20,24 +22,71 @@ export class UpdateUserComponent implements OnInit {
     private _loginService: LoginService
   ) {
     this.titulo = "Actualizar Usuario"
-    this.user = new User("","", "" ,"", "", "");
+    this.user = new User("", "", "", "", "", "");
+    this.error = new Error();
+    this.exito = '';
   }
 
   ngOnInit() {
+    this.ngDoCheck();
+    $("#error").hide();
+    $("#exito").hide();
     this.user = JSON.parse(localStorage.getItem('usuario'));
   }
-  onSubmit() {
-    console.log(this.user);
-    this._loginService.updateUser(this.user).subscribe(res => {
-      if(res.code == 200){
-        console.log(res.message);
-      }else{
-      console.log(res.message);
+  ngDoCheck() {
+    let usuario = localStorage.getItem('usuario') || "no";
+    if (usuario == "no") {
+      this._router.navigate(['login']);
     }
+  }
+  onSubmit() {
+    this._loginService.updateUser(this.user).subscribe(res => {
+      if (res.code == 200) {
+        this.signout();
+        this.handleExito('Usuario modificado correctamente');
+        setTimeout(() => {
+          let obj = res.data;
+          this._router.navigate(['/login']);
+        }, 5000);
+      } else {
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
     }, err => {
-      console.log(err);
+      this.error = err;
+      this.handleError(this.error);
     });
-
+  }
+  signout(){
+    this._loginService.signout().subscribe(res=>{
+      if(res.code == 200){
+        //this.handleExito('Te has deslogueado correctamente');
+        localStorage.clear();
+      }else{
+        this.error = new Error(res.message);
+        this.handleError(this.error);
+      }
+    }, err=>{
+      this.error = err;
+      this.handleError(this.error);
+    });
+  }
+  sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  async handleExito(mensaje){
+    this.exito = mensaje;
+    $("#exito").show();
+    await this.sleep(5000);
+    $("#exito").hide();
+    this.exito = '';
+  }
+  async handleError(error) {
+     console.log(error.message);
+     $("#error").show();
+     await this.sleep(5000);
+     $("#error").hide();
+     this.error = new Error();
   }
 
 }

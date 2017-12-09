@@ -1,3 +1,4 @@
+// ACABADO
 import { Component, OnInit, ErrorHandler } from '@angular/core';
 import { OperacionesService } from '../services/operaciones.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -100,6 +101,8 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   onSubmit() {
     if (this.peticion.numero != null && this.peticion.horas != null) {
       this.addPeticion();
+      this.peticion.numero = null;
+      this.peticion.horas = null;
     }
   }
   onCancel() {
@@ -160,7 +163,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
     }
     this._operaciones.deletePeticion(peticionEliminar.id).subscribe(res => {
       if (res.code == 200) {
-        // this.peticiones.splice(pos, 1);
+        this.peticiones.splice(pos, 1);
         this.getPeticiones();
       } else {
         this.error = new Error(res.message);
@@ -184,7 +187,6 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
     for (let pet of this.peticiones){
       this._operaciones.deletePeticion(pet.id).subscribe(res => {
         if (res.code == 200) {
-          // this.peticiones.splice(pos, 1);
           this.peticiones = new Array();
           this.getPeticiones();
         } else {
