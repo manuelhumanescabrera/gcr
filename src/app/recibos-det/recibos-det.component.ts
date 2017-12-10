@@ -24,6 +24,7 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
   public editar: boolean;
   public es:any;
   public error:Error;
+  public exito:string;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
@@ -38,11 +39,19 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
     this.recibo = new Recibo(null, null, '', null, '' ,false,'', '' );
     this.es = GLOBAL.es;
     this.error = new Error();
+    this.exito = '';
    }
-
+   /**
+    * Acciones al iniciar el módulo
+    * Comprueba si estamos logueados y esconde los mensajes de error y exito.
+    * Guarda el parámetro pasado por la url en number
+    * obtiene el nombre del usuario, los recibos del mismo y la cantidad pendiente de pago.
+    * @method ngOnInit
+    */
   ngOnInit() {
-    $("#error").hide();
     this.ngDoCheck();
+    $("#error").hide();
+    $("#exito").hide();
     this._route.params.forEach(params => {
       this.num = params['num'];
     });
@@ -50,12 +59,22 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
     this.getRecibos();
     this.getCantidad();
   }
+  /**
+   * Comprueba si estamos logueados.
+   * En caso contrario nos redirige al login.
+   * @method ngDoCheck
+   */
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
     if(usuario == "no"){
       this._router.navigate(['login']);
     }
   }
+  /**
+   * Obtiene el nombre del usuario.
+   * @method getSocioNombre
+   * @return {[type]}       [description]
+   */
   getSocioNombre(){
     this._operaciones.getNombre(this.num).subscribe(res=>{
       if(res.code === 200){
@@ -70,6 +89,11 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
       this.handleError(this.error);
     })
   }
+  /**
+   * Obtiene los recibos del usuario.
+   * @method getRecibos
+   * @return {[type]}   [description]
+   */
   getRecibos(){
     this._operaciones.getRecibosPendientes(this.num).subscribe(res=>{
       if(res.code === 200){
@@ -83,6 +107,11 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
       this.handleError(this.error);
     })
   }
+  /**
+   * obtiene la cantidad pendiente de un usuario
+   * @method getCantidad
+   * @return {[type]}    [description]
+   */
   getCantidad(){
     this._operaciones.getCantidad(this.num).subscribe(res=>{
       if(res.code === 200){
@@ -97,9 +126,13 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
       this.handleError(this.error);
     })
   }
-  consultarRecibo(event){
-    console.log(event.target.value);
-  }
+  /**
+   * Función que se encarga obtener el recibo seleccionado y setearlo en el formulario
+   * de editar los recibos.
+   * @method editarRecibo
+   * @param  {[type]}     event [description]
+   * @return {[type]}           [description]
+   */
   editarRecibo(event){
     var num_fila = event.target.value;
     this._operaciones.getRecibo(num_fila).subscribe(res=>{
@@ -121,9 +154,15 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
       this.handleError(this.error);
     })
   }
+  /**
+   * función encargada de guardar los cambios en la base de datos.
+   * @method guardarRecibo
+   * @return {[type]}      [description]
+   */
   guardarRecibo(){
    this._operaciones.setActualizaRecibo(this.recibo).subscribe(res=>{
      if(res.code == 200){
+       this.handleExito(res.message);
        this.getRecibos();
        this.getCantidad();
      }else{
@@ -136,18 +175,63 @@ export class RecibosDetComponent implements OnInit, ErrorHandler {
     });
     this.editar = !this.editar;
   }
+  /**
+   * Función que nos devuelve al component recibos.
+   * @method volver
+   * @return {[type]} [description]
+   */
   volver(){
     this._router.navigate(['/recibos']);
   }
+  /**
+   * Función que cierra el panel de editar un recibo.
+   * @method salirEditar
+   * @return {[type]}    [description]
+   */
   salirEditar(){
     this.editar = !this.editar;
     this.recibo = new Recibo(null, null, '', null, '' ,false,'', '' );
   }
-  exportaCsv(){
+
+  /**
+   * Función que exporta los datos a csv
+   * @method exportaCsv
+   * @return {[type]}   [description]
+   */
+  exportaCsv() {
     this._ng2Csv.download(this.recibos, 'recibos_'+this.nombre.numero+'.csv', undefined, GLOBAL.csvConf);
   }
-  handleError(error){
+  /**
+   * Función que pausa la ejecución del código
+   * @method sleep
+   * @param  {number} ms [milisegundos de espera]
+   */
+  sleep(ms:number){
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  /**
+   * Función que muestra un mensaje de exito durante 5000 ms.
+   * @method handleExito
+   * @param  {string}    mensaje [Texto que queremos mostrar]
+   */
+  async handleExito(mensaje:string){
+    this.exito = mensaje;
+    $("#exito").show();
+    await this.sleep(5000);
+    $("#exito").hide();
+    this.exito = '';
+  }
+  /**
+   * Función de manejo de errores.
+   * Muestra un mensaje al usuario durante 5000 ms.
+   * @method handleError
+   * @param  {Error}     error [Error que queremos mostrar]
+   */
+  async handleError(error:Error) {
     console.log(error.message);
-    $("#error").show().delay(5000).fadeOut();
+    $("#error").show();
+    await this.sleep(5000);
+    $("#error").hide();
+    this.error = new Error();
   }
 }

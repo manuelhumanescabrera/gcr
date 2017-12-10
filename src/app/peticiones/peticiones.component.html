@@ -2,7 +2,6 @@
   <div class="page-header">
     <h1>{{titulo}}</h1>
   </div>
-  <div id="success" class="alert alert-success" role="alert">{{mensaje}}</div>
   <form #formPeticiones="ngForm" (submit)="onSubmit()">
     <div class="row">
       <div class="col-sm-12">
@@ -35,6 +34,7 @@
   <!-- Desde aquí la tabla de datos -->
   <hr>
     <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
+    <div id="exito" class="alert alert-success" role="alert">{{exito}}</div>
     <!-- <form #formRemesas="ngForm" (submit)="generaRemesa()"> -->
       <div class="row" *ngIf="inputDatosRem">
         <div class="col-sm-6">
@@ -67,7 +67,7 @@
     <!-- </form> -->
     <div *ngIf="peticiones.length > 0" class="row">
       <div class="col-sm-3">
-        <button class="btn btn-primary btn-md btn-block noPadding" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
+        <button class="btn btn-info btn-md btn-block noPadding" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
       </div>
       <div class="col-sm-3">
         <button class="btn btn-success btn-md btn-block noPadding" type="button" name="exportar" (click)="muestraInputDatosRem()">Generar Remesa</button>
@@ -94,7 +94,7 @@
         <td>{{pet.horas}}</td>
         <td>
           <button class="btn btn-warning btn-block btn-xs" type="button" name="button" (click)="editar($event)" value="{{i}}">Editar</button>
-          <button class="btn btn-danger btn-block btn-xs" type="button" name="button" (click)="eliminar($event, i, true)" value="{{i}}">Eliminar</button>
+          <button class="btn btn-danger btn-block btn-xs" type="button" name="button" (click)="eliminar($event, i)" value="{{i}}">Eliminar</button>
         </td>
       </tr>
     </table>

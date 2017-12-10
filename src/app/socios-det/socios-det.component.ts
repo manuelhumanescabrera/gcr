@@ -34,7 +34,7 @@ export class SociosDetComponent implements OnInit, ErrorHandler {
     private _router: Router,
     private _ng2Csv: Ng2CsvService
   ) {
-    this.titulo = 'Editar socio número: ';
+    this.titulo = 'Socio número: ';
     this.socio = new Socio(null, '', '', '', false, '', '', null, null, '', false, '', null, '');
     this.telefonos = new Array();
     this.socio.telefonos = this.telefonos;

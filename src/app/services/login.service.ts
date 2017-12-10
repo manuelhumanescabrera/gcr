@@ -12,8 +12,13 @@ export class LoginService {
 
   constructor(private _http: Http) {
     this.url = GLOBAL.urlLogin;
-
   }
+  /**
+   * Función que realiza el login de un usuario
+   * @method login
+   * @param  {User}   usuario [usuario a loguear]
+   * @return {[type]}         [description]
+   */
   login(usuario:User) {
     let json = JSON.stringify(usuario);
     let params =  'json='+json;
@@ -26,6 +31,12 @@ export class LoginService {
         console.log(<any>err);
       });
   }
+  /**
+   * función que da de alta a un nuevo usuario
+   * @method singup
+   * @param  {User}   usuario [usuario a dar de alta]
+   * @return {[type]}         [description]
+   */
   singup(usuario:User) {
     let json = JSON.stringify(usuario);
     let params =  'json='+json;
@@ -38,6 +49,11 @@ export class LoginService {
         console.log(<any>err);
       });
   }
+  /**
+   * Función que comprueba si estamos logueados
+   * @method status
+   * @return {[type]} [description]
+   */
   status() {
     let obj = {comprobar: true};
     let json = JSON.stringify(obj);
@@ -51,6 +67,11 @@ export class LoginService {
         console.log(<any>err);
       });
   }
+  /**
+   * Función que desloguea a un usuario.
+   * @method signout
+   * @return {[type]} [description]
+   */
   signout() {
     let obj = {comprobar: true};
     let json = JSON.stringify(obj);
@@ -64,6 +85,12 @@ export class LoginService {
         console.log(<any>err);
       });
   }
+  /**
+   * función que actualiza los datos de un usuario.
+   * @method updateUser
+   * @param  {User}     usuario [usuario a actualizar]
+   * @return {[type]}           [description]
+   */
   updateUser(usuario:User) {
     let json = JSON.stringify(usuario);
     let params =  'json='+json;

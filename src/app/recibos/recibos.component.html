@@ -19,7 +19,7 @@
   </div>
   <div *ngIf="nombres.length > 0" class="row">
     <div class="col-sm-3">
-      <button class="btn btn-primary btn-md btn-block noPadding" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
+      <button class="btn btn-info btn-md btn-block noPadding" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
     </div>
   </div>
   <hr>
@@ -37,7 +37,6 @@
       <td>{{nombre.pendiente}}</td>
       <td>
         <button class="btn btn-primary btn-xs btn-block" type="button" name="button" (click)="consultarSocio($event)" value="{{nombre.numero}}"><span class=" glyphicon glyphicon-list-alt"> </span>Consultar</button>
-        <!-- <button class="btn btn-warning btn-xs" type="button" name="button" (click)="editarSocio($event)" value="{{nombre.numero}}"><span class=" glyphicon glyphicon-edit"> </span>Editar</button> -->
       </td>
     </tr>
   </table>

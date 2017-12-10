@@ -24,11 +24,12 @@
   </div>
   <div *ngIf="recibos.length > 0" class="row">
     <div class="col-sm-3">
-      <button class="btn btn-primary btn-md btn-block noPadding" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
+      <button class="btn btn-info btn-md btn-block noPadding" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
     </div>
   </div>
   <hr>
   <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
+  <div id="exito" class="alert alert-success" role="alert">{{exito}}</div>
   <div class="!editar">
     <table *ngIf="!editar" class="table">
       <tr>

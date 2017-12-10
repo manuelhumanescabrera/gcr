@@ -10,9 +10,13 @@ import {Config} from '../models/config.model';
 export class ConfigService {
   public url: string;
   constructor(private _http: Http) {
-    // ruta de desarrollo
     this.url = GLOBAL.urlBackend;
   }
+  /**
+   * Función que obtiene los datos del fichero de configuración del servidor
+   * @method getConf
+   * @return {[type]} [description]
+   */
   getConf(){
     let obj = {comprobar: true};
     let json = JSON.stringify(obj);
@@ -26,6 +30,12 @@ export class ConfigService {
         console.log(<any>err);
       });
   }
+  /**
+   * Función que guarda los datos de configuración en el servidor.
+   * @method setConf
+   * @param  {Config} config [description]
+   * @return {[type]}        [description]
+   */
   setConf(config:Config){
     let json = JSON.stringify(config);
     let params =  'json='+json;

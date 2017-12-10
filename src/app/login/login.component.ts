@@ -22,11 +22,24 @@ export class LoginComponent implements OnInit, ErrorHandler {
     this.error = new Error();
     this.exito = '';
   }
-
+  /**
+   * Acciones al iniciar el módulo
+   * Esconde los mensajes de error y exito.
+   * @method ngOnInit
+   */
   ngOnInit() {
     $("#error").hide();
     $("#exito").hide();
   }
+  /**
+   * Método que se ejecuta al hacer login.
+   * Si todo ha ido bien, se muestra un mensaje de usuario autentificado correctamente
+   * durante 1 segundo, se almacena la información del usuario en el localStorage
+   * y se redirige hacia el inicio de la aplicación.
+   * En caso contrario se muestra un mensaje de error.
+   * @method onSubmit
+   * @return {[type]} [description]
+   */
   async onSubmit() {
     this.user.email = this.user.username;
     this._loginService.login(this.user).subscribe(res => {
@@ -47,17 +60,33 @@ export class LoginComponent implements OnInit, ErrorHandler {
     });
 
   }
-  sleep(ms) {
+  /**
+   * Función que pausa la ejecución del código
+   * @method sleep
+   * @param  {number} ms [milisegundos de espera]
+   */
+  sleep(ms:number){
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  async handleExito(mensaje) {
+  /**
+   * Función que muestra un mensaje de exito durante 5000 ms.
+   * @method handleExito
+   * @param  {string}    mensaje [Texto que queremos mostrar]
+   */
+  async handleExito(mensaje:string){
     this.exito = mensaje;
     $("#exito").show();
     await this.sleep(5000);
     $("#exito").hide();
     this.exito = '';
   }
-  async handleError(error) {
+  /**
+   * Función de manejo de errores.
+   * Muestra un mensaje al usuario durante 5000 ms.
+   * @method handleError
+   * @param  {Error}     error [Error que queremos mostrar]
+   */
+  async handleError(error:Error) {
     console.log(error.message);
     $("#error").show();
     await this.sleep(5000);

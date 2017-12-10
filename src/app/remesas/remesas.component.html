@@ -33,21 +33,18 @@
   </div>
   <hr>
   <div class="row" *ngIf="nombres.length > 0">
-    <div class="col-lg-2">
-        <button class="btn btn-primary btn-block" type="button" name="exportar" (click)="exportaRemesaCsv()">Exportar a CSV</button>
+    <div class="col-md-3 noPadding">
+        <button class="btn btn-info btn-block btn-md" type="button" name="exportar" (click)="exportaRemesaCsv()">Exportar a CSV</button>
     </div>
-    <div class="col-lg-2">
-        <button class="btn btn-default btn-block" type="button" name="sepa" (click)="almacenaSms()">Envia SMS</button>
+    <div class="col-md-3 noPadding">
+        <button class="btn btn-success btn-block btn-md" type="button" name="sepa" (click)="almacenaSms()">Envia SMS</button>
     </div>
-    <div class="col-lg-2">
-        <button class="btn btn-success btn-block" type="button" name="sepa" (click)="generaSepa()">Genera SEPA</button>
+    <div class="col-md-1"></div>
+    <div class="col-md-2 noPadding">
+      <h3 class="noMargin"><span class="label label-primary">Horas: {{totalHoras}}</span></h3>
     </div>
-    <div class="col-lg-1"></div>
-    <div class="col-lg-2">
-      <h3 class=" noMargin"><span class="label label-primary">Horas: {{totalHoras}}</span></h3>
-    </div>
-    <div class="col-lg-3">
-      <h3 class=" noMargin"><span class="label label-primary">Cantidad: {{totalEuros}} €</span></h3>
+    <div class="col-md-3 noPadding">
+      <h3 class="noMargin"><span class="label label-primary">Cantidad: {{totalEuros}} €</span></h3>
     </div>
   </div>
   <div *ngIf="nombres.length > 0" class="table-responsive">

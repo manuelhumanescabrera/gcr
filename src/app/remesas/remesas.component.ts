@@ -45,18 +45,34 @@ export class RemesasComponent implements OnInit, ErrorHandler {
     this.telefonos = new Array();
   }
 
+  /**
+   * Acciones al iniciar el módulo
+   * Comprueba si estamos logueados y esconde los mensajes de error y exito.
+   * @method ngOnInit
+   */
   ngOnInit() {
+    this.ngDoCheck();
     $('#pleaseWaitDialog').hide();
     $('#error').hide();
-    this.ngDoCheck();
     this.getRemesas();
   }
+  /**
+   * Comprueba si estamos logueados.
+   * En caso contrario nos redirige al login.
+   * @method ngDoCheck
+   */
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
     if (usuario == "no") {
       this._router.navigate(['login']);
     }
   }
+  /**
+   * Función que obtiene las remesas desde el servidor.
+   * Muestra un mensaje de error en caso de no obtener datos.
+   * @method getRemesas
+   * @return {[type]}   [description]
+   */
   getRemesas() {
     this._operaciones.getRemesas().subscribe(res => {
       if (res.code == 200) {
@@ -70,6 +86,13 @@ export class RemesasComponent implements OnInit, ErrorHandler {
       this.handleError(this.error);
     })
   }
+  /**
+   * Función que se encarga de mostrar datos de la remesa al realizar un cambio
+   * en el select.
+   * @method muestraRemesa
+   * @param  {any}      event [Objeto html select]
+   * @return {[type]}            [description]
+   */
   muestraRemesa(event) {
     if (event.target.value != '-1') {
       this.remesa.remesa = event.target.value;
@@ -85,6 +108,12 @@ export class RemesasComponent implements OnInit, ErrorHandler {
     }
 
   }
+  /**
+   * Función que obtiene los datos de una remesa desde el servidor.
+   * Muestra un mensaje de error en caso de error.
+   * @method getRemesa
+   * @return {[type]}  [description]
+   */
   getRemesa() {
     this._operaciones.getRemesa(this.remesa).subscribe(res => {
       if (res.code == 200) {
@@ -103,23 +132,17 @@ export class RemesasComponent implements OnInit, ErrorHandler {
       this.handleError(this.error);
     })
   }
-  exportaRemesaCsv() {
-    let exportData = [
-      // {remesa: this.remesa.concepto},
-      { data: JSON.stringify(this.nombres) }
-    ];
-    this._ng2Csv.download(this.nombres, 'remesa.csv', undefined, GLOBAL.csvConf);
-  }
-  generaSepa() {
-    let num = 'ES9330230034361234567891';
-    console.log(num);
-  }
 
+/**
+ * Función encargada de preparar el array de sms a enviar.
+ * Para ello obtiene todos los télefonos de los socios que aparecen en la remesa
+ * y posteriormente asigna los teléfonos a cada socio y conforma un array de SMS.
+ * En caso de error muestra un mensaje
+ * @method preparaSms
+ * @return {[type]}   [description]
+ */
   async preparaSms() {
     $('#pleaseWaitDialog').show();
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
     let tels = new Array();
     for (let i = 0; i < this.nombres.length; i++) {
       tels.push(this.nombres[i].numero);
@@ -142,9 +165,15 @@ export class RemesasComponent implements OnInit, ErrorHandler {
       this.error = err;
       this.handleError(this.error);
     });
-    await sleep(2500);
+    await this.sleep(2500);
     $('#pleaseWaitDialog').hide();
   }
+  /**
+   * Función que guarda en el localStorage el array de sms y nos redirige al
+   * módulo SMS
+   * @method almacenaSms
+   * @return {[type]}    [description]
+   */
   almacenaSms() {
     this.preparaSms().then(() => {
       if (this.arraySms.length > 0) {
@@ -156,8 +185,33 @@ export class RemesasComponent implements OnInit, ErrorHandler {
       }
     })
   }
-  handleError(error) {
+  /**
+   * Función que exporta los datos a csv
+   * @method exportaremesaCsv
+   * @return {[type]}   [description]
+   */
+   exportaRemesaCsv() {
+     this._ng2Csv.download(this.nombres, 'remesa.csv', undefined, GLOBAL.csvConf);
+   }
+  /**
+   * Función que pausa la ejecución del código
+   * @method sleep
+   * @param  {number} ms [milisegundos de espera]
+   */
+  sleep(ms:number){
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  /**
+   * Función de manejo de errores.
+   * Muestra un mensaje al usuario durante 5000 ms.
+   * @method handleError
+   * @param  {Error}     error [Error que queremos mostrar]
+   */
+  async handleError(error:Error) {
     console.log(error.message);
-    $("#error").show().delay(5000).fadeOut();
+    $("#error").show();
+    await this.sleep(5000);
+    $("#error").hide();
+    this.error = new Error();
   }
 }

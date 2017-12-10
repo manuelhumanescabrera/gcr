@@ -184,9 +184,7 @@
                 <th>En uso</th>
                 <th>Fecha de alta</th>
                 <th>Fecha de baja</th>
-                <th *ngIf="bloqueo">
-                  <button class="btn btn-success btn-xs" type="button" name="button" (click)="setTelefono()"><span class="glyphicon glyphicon-plus">Nuevo</span></button>
-                </th>
+                <th *ngIf="bloqueo"></th>
               </tr>
               <tr *ngFor="let telefono of socio.telefonos">
                 <td>{{telefono.telefono}}</td>
@@ -194,7 +192,7 @@
                 <td>{{telefono.fecha_alta}}</td>
                 <td>{{telefono.fecha_baja}}</td>
                 <td *ngIf="bloqueo">
-                  <button class="btn btn-danger btn-xs" *ngIf="bloqueo" type="button" name="button" (click)="deleteTelefono($event)" value="{{telefono.id}}"><span class="glyphicon glyphicon-trash"></span></button>
+                  <button class="btn btn-danger btn-block btn-xs" *ngIf="bloqueo" type="button" name="button" (click)="deleteTelefono($event)" value="{{telefono.id}}">Eliminar</button>
                 </td>
               </tr>
             </table>
@@ -232,8 +230,8 @@
           </div>
         </div>
         <div class="col-md-3">
-          <div *ngIf="this.tipo == 'editar'" class="form-group">
-            <input class="btn btn-success btn-block" type="submit" name="enviar" value="Enviar" (click)="updateSocio()" [disabled]="!formSocioEdit.form.valid">
+          <div *ngIf="this.tipo != 'nuevo'" class="form-group">
+            <input class="btn btn-success btn-block" type="submit" name="enviar" value="Guardar" (click)="updateSocio()" [disabled]="!formSocioEdit.form.valid">
           </div>
           <div *ngIf="this.tipo == 'nuevo'" class="form-group">
             <input class="btn btn-success btn-block" type="submit" name="enviar" value="Añadir" (click)="addSocio()" [disabled]="!formSocioEdit.form.valid">
@@ -245,7 +243,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <button class="btn btn-primary btn-block" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
+          <button class="btn btn-info btn-block" type="button" name="exportar" (click)="exportaCsv()">Exportar a CSV</button>
         </div>
       </div>
     </div>

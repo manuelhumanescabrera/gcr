@@ -1,6 +1,8 @@
 <div class="container">
   <div class="col-sm-4 col-sm-offset-2">
     <h3>{{titulo}}</h3>
+    <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
+    <div id="exito" class="alert alert-success" role="alert">{{exito}}</div>
     <form #formConfig="ngForm" (ngSubmit)="setConfig()">
       <div class="col-sm-12">
         <div class="form-group" [class.has-primary]="!nombre.touched" [class.has-success]="nombre.valid && nombre.touched" [class.has-error]="nombre.invalid && (nombre.dirty || nombre.touched)">

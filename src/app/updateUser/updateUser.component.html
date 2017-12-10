@@ -59,10 +59,10 @@
         </div>
       </div>
       <div class="col-sm-12">
-        <div class="form-group" [class.has-primary]="!passwordVerify.touched" [class.has-success]="passwordNew.value === passwordVerify.value && passwordVerify.valid && passwordVerify.touched" [class.has-error]="passwordNew != passwordVerify && (passwordVerify.invalid && (passwordVerify.dirty || passwordVerify.touched))">
+        <div class="form-group" [class.has-primary]="!passwordVerify.touched" [class.has-success]="(passwordNew.value == passwordVerify.value) && passwordVerify.valid && passwordVerify.touched" [class.has-error]="(passwordNew.value != passwordVerify.value) || (passwordVerify.invalid && (passwordVerify.dirty || passwordVerify.touched))">
           <label class="label label-primary" for="passwordVerify">Contraseña Nueva:</label>
           <input #passwordVerify="ngModel" [(ngModel)]="user.passwordVerify" class="form-control" type="password" name="passwordVerify" placeholder="Repita su contraseña" pattern="[\w\W]{5,}" required>
-          <div *ngIf="passwordNew.value != passwordVerify.value && passwordVerify.invalid && (passwordVerify.dirty || passwordVerify.touched)" class="control-label has-error">
+          <div *ngIf="(passwordNew.value != passwordVerify.value) || passwordVerify.invalid && (passwordVerify.dirty || passwordVerify.touched)" class="control-label has-error">
             Las contraseñas deben coincidir
           </div>
         </div>

@@ -34,19 +34,34 @@ export class RecibosComponent implements OnInit, ErrorHandler {
     this.error = new Error();
   }
 
+  /**
+   * Acciones al iniciar el módulo
+   * Comprueba si estamos logueados y esconde los mensajes de error y exito.
+   * También guarda una copia de los nombres para restablecer los filtros.
+   * @method ngOnInit
+   */
   ngOnInit() {
     $("#error").hide();
     this.ngDoCheck();
-    // this.socios = this.getSocios();
     this.getNombres();
     this.nombresBack = this.nombres;
   }
+  /**
+   * Comprueba si estamos logueados.
+   * En caso contrario nos redirige al login.
+   * @method ngDoCheck
+   */
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
     if(usuario == "no"){
       this._router.navigate(['login']);
     }
   }
+  /**
+   * función que obtiene los nombres de los socios con recibos pendientes.
+   * @method getNombres
+   * @return {[type]}   [description]
+   */
   getNombres() {
     this._operaciones.getNombresPendientes().subscribe(res => {
       if(res.code == 200){
@@ -67,19 +82,22 @@ export class RecibosComponent implements OnInit, ErrorHandler {
       this.handleError(this.error);
     })
   }
-
+  /**
+   * Función que nos lleva a recibos-det
+   * para ello obtiene el número de socio de la tabla y lo pasa como parámetro
+   * al componente recibos-det.
+   * @method consultarSocio
+   * @param  {any}       evento [boton de la tabla de usuarios con recibos pendientes]
+   * @return {[type]}              [description]
+   */
   consultarSocio(evento) {
     let numero = evento.target.value;
     this._router.navigate(['recibos-det', numero]);
   }
-  editarSocio(evento){
-    let numero = evento.target.value;
-    this._router.navigate(['recibos-det', numero]);
-  }
   /**
-  * [buscarNumero description]
+  * Función que filtra los nombres con recibos pendienes por número.
   * @method buscarNumero
-  * @param  {[type]}     evento [description]
+  * @param  {any}     evento [input numero]
   * @return {[type]}            [description]
   */
   buscarNumero(evento) {
@@ -95,7 +113,12 @@ export class RecibosComponent implements OnInit, ErrorHandler {
       this.nombres = this.nombresBack.slice(0);
     }
   }
-
+  /**
+   * Función que filtra los nombres con recibos pendientes por nombre.
+   * @method buscarNombre
+   * @param  {[type]}     evento [input nombre]
+   * @return {[type]}            [description]
+   */
   buscarNombre(evento) {
     this.nombre.numero = null;
     let stringNombre = evento.target.value;
@@ -109,11 +132,33 @@ export class RecibosComponent implements OnInit, ErrorHandler {
       this.nombres = this.nombresBack.slice(0);
     }
   }
-  exportaCsv(){
+  /**
+   * Función que exporta los datos a csv
+   * @method exportaCsv
+   * @return {[type]}   [description]
+   */
+  exportaCsv() {
     this._ng2Csv.download(this.nombres, 'socios_pendientes.csv', undefined, GLOBAL.csvConf);
   }
-  handleError(error){
+  /**
+   * Función que pausa la ejecución del código
+   * @method sleep
+   * @param  {number} ms [milisegundos de espera]
+   */
+  sleep(ms:number){
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  /**
+   * Función de manejo de errores.
+   * Muestra un mensaje al usuario durante 5000 ms.
+   * @method handleError
+   * @param  {Error}     error [Error que queremos mostrar]
+   */
+  async handleError(error:Error) {
     console.log(error.message);
-    $("#error").show().delay(5000).fadeOut();
+    $("#error").show();
+    await this.sleep(5000);
+    $("#error").hide();
+    this.error = new Error();
   }
 }

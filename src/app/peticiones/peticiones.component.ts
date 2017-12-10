@@ -28,7 +28,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   public remesa: Remesa;
   public inputDatosRem: boolean;
   public error: Error;
-  public mensaje: string;
+  public exito: string;
   constructor(
     private _operaciones: OperacionesService,
     private _route: ActivatedRoute,
@@ -46,20 +46,30 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
     this.remesa = new Remesa(null, '', '');
     this.inputDatosRem = false;
     this.error = new Error();
-    this.mensaje = '';
+    this.exito = '';
   }
-
+  /**
+   * Comprueba si estamos logueados.
+   * En caso contrario nos redirige al login.
+   * @method ngDoCheck
+   */
   ngDoCheck() {
     let usuario = localStorage.getItem('usuario') || "no";
     if (usuario == "no") {
       this._router.navigate(['login']);
     }
   }
+  /**
+   * Acciones al iniciar el módulo
+   * Comprueba si estamos logueados y esconde los mensajes de error y exito y el modal de modificaciones.
+   * obtiene los nombres y las peticiones y habilita cerrar el modal desde la tecla escape.
+   * @method ngOnInit
+   */
   ngOnInit() {
     this.ngDoCheck();
     $('#modalEdit').hide();
     $("#error").hide();
-    $("#success").hide();
+    $("#exito").hide();
     this.getNombres();
     this.getPeticiones();
     var that = this;//defino esto para poder utilizar el objeto dentro de la función
@@ -71,6 +81,11 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
         }
       });
   }
+  /**
+   * función que obtiene los nombres de los socios del servidor.
+   * @method getNombres
+   * @return {[type]}   [description]
+   */
   getNombres() {
     this._operaciones.getNombres().subscribe(res => {
       if (res.code == 200) {
@@ -85,6 +100,11 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       this.handleError(err);
     })
   }
+  /**
+   * Función que obtiene del servidor las peticiones.
+   * @method getPeticiones
+   * @return {[type]}      [description]
+   */
   getPeticiones() {
     this._operaciones.getPeticiones().subscribe(res => {
       if (res.code == 200) {
@@ -98,6 +118,12 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       this.handleError(err);
     });
   }
+  /**
+   * Función que se llama al hacer submit sobre el formulario de añadir petición.
+   * Llama a addPeticion y limpia los campos del formulario.
+   * @method onSubmit
+   * @return {[type]} [description]
+   */
   onSubmit() {
     if (this.peticion.numero != null && this.peticion.horas != null) {
       this.addPeticion();
@@ -105,6 +131,14 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       this.peticion.horas = null;
     }
   }
+  /**
+   * Función que comprueba si se han guardado los datos antes de salir del modal
+   * de modificación de la petición.
+   * Si los datos no se han guardado (this.back = true) se restrablece la petición
+   * sin modificaciones.
+   * @method onCancel
+   * @return {[type]} [description]
+   */
   onCancel() {
     if (this.back) {
       this.peticiones[this.numeroPeticion] = this.peticionTemp;
@@ -112,6 +146,11 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       this.back = true;
     }
   }
+  /**
+   * Función que setea el nombre del usuario en función de su número.
+   * @method setNombre
+   * @return {[type]}  [description]
+   */
   setNombre() {
     var num;
     if (this.peticion.numero == undefined || this.peticion.numero - 1 > this.nombres.length - 1 || this.peticion.numero - 1 < 0) {
@@ -126,6 +165,11 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       }
     }
   }
+  /**
+   * Función que añade una petición a la base de datos.
+   * @method addPeticion
+   * @return {[type]}    [description]
+   */
   addPeticion() {
     this._operaciones.setPeticion(this.peticion).subscribe(
       res => {
@@ -143,6 +187,14 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       }
     );
   }
+  /**
+   * Función que muestra el modal para modificar una petición.
+   * Guarda la petición en la variable peticionTemp por si no se guardan los datos
+   * correctamente modificados.
+   * @method editar
+   * @param  {number} evento [numero de petición a editar]
+   * @return {[type]}        [description]
+   */
   editar(evento) {
     this.numeroPeticion = evento.target.value;
     this.peticionEdit = this.peticiones[this.numeroPeticion];
@@ -150,21 +202,18 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
     $('#modalModificaciones').show();
   }
   /**
-  *Elimina una petición llamando a deletePeticion del servicio _operaciones.
-  *Hay que arreglar que me muestre un mensaje por cada solicitud de eliminación
-  *en grupo
-  */
-  eliminar(evento, pos, form) {
-    var peticionEliminar;
-    if (form) {
-      peticionEliminar = this.peticiones[evento.target.value];
-    } else {
-      peticionEliminar = this.peticiones[evento.value];
-    }
+   * Elimina una petición por su posición en el array de peticiones.
+   * @method eliminar
+   * @param  {any} evento [objeto html correspondiente al botón eliminar de cada fila]
+   * @param  {number} pos    [Posición del elemento a eliminar en el array]
+   */
+  eliminar(evento, pos) {
+    var peticionEliminar = this.peticiones[evento.target.value];
     this._operaciones.deletePeticion(peticionEliminar.id).subscribe(res => {
       if (res.code == 200) {
         this.peticiones.splice(pos, 1);
         this.getPeticiones();
+        this.handleExito(res.message);
       } else {
         this.error = new Error(res.message);
         this.handleError(this.error);
@@ -174,15 +223,31 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       this.handleError(err);
     })
   }
+  /**
+   * Función que oculta el modal de modificaciones de peticiones.
+   * @method cerrarModal
+   * @return {[type]}    [description]
+   */
   cerrarModal() {
     this.onCancel();
     $('#modalModificaciones').fadeOut(500);
   }
+  /**
+   * Función que recoge del elemento hijo (modal modificaciones) si se ha guardado
+   * la modificación de la petición o no.
+   * @method backPeticion
+   * @param  {boolean}     evento [true si volvemos al objeto origina, false si no]
+   * @return {[type]}            [description]
+   */
   backPeticion(evento) {
     this.back = evento;
   }
-
-  deleteAll() {
+/**
+ * Función que elimina todas las peticiones.
+ * @method deleteAll
+ * @return {[type]}  [description]
+ */
+  async deleteAll() {
     let err:boolean = false;
     for (let pet of this.peticiones){
       this._operaciones.deletePeticion(pet.id).subscribe(res => {
@@ -195,24 +260,36 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       }, err => {
         err = true
       });
+      await this.sleep(1000);
       if(err){
         this.error = new Error('Ha habido problemas eliminando peticiones');
         this.handleError(this.error);
+      }else{
+        this.handleExito('Todos los registros han sido eliminados correctamente');
       }
     }
     this.peticiones = new Array();
   }
+  /**
+   * función que muestra el panel para completar los datos de la remesa.
+   * @method muestraInputDatosRem
+   * @return {[type]}             [description]
+   */
   muestraInputDatosRem() {
     this.inputDatosRem = true;
   }
+  /**
+   * Función que genera una remesa.
+   * @method generaRemesa
+   * @return {[type]}     [description]
+   */
   generaRemesa() {
     this._operaciones.generaRemesa(this.remesa).subscribe(res => {
       if (res.code == 200) {
         this.inputDatosRem = false;
         this.remesa = new Remesa(null, '', '');
         this.getPeticiones();
-        this.mensaje = res.message;
-        $("#success").show().delay(5000).fadeOut();
+        this.handleExito(res.message);
       } else {
         this.error = new Error(res.message);
         this.handleError(this.error);
@@ -222,18 +299,54 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       this.handleError(err);
     });
   }
+  /**
+   * Función que oculta el panel para completar los datos de la remesa
+   * @method salirGenRemesa
+   * @return {[type]}       [description]
+   */
   salirGenRemesa(){
     this.inputDatosRem = false;
+    this.remesa = new Remesa(null, '', '');
   }
-  exportaCsv(){
-    let exportData = [
-      { data: JSON.stringify(this.peticiones) }
-    ];
+  /**
+   * Función que exporta los datos a csv
+   * @method exportaCsv
+   * @return {[type]}   [description]
+   */
+  exportaCsv() {
     this._ng2Csv.download(this.peticiones, 'peticiones.csv', undefined, GLOBAL.csvConf);
-
   }
-  handleError(error) {
+  /**
+   * Función que pausa la ejecución del código
+   * @method sleep
+   * @param  {number} ms [milisegundos de espera]
+   */
+  sleep(ms:number){
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  /**
+   * Función que muestra un mensaje de exito durante 5000 ms.
+   * @method handleExito
+   * @param  {string}    mensaje [Texto que queremos mostrar]
+   */
+  async handleExito(mensaje:string){
+    this.exito = mensaje;
+    $("#exito").show();
+    await this.sleep(5000);
+    $("#exito").hide();
+    this.exito = '';
+  }
+  /**
+   * Función de manejo de errores.
+   * Muestra un mensaje al usuario durante 5000 ms.
+   * @method handleError
+   * @param  {Error}     error [Error que queremos mostrar]
+   */
+  async handleError(error:Error) {
     console.log(error.message);
-    $("#error").show().delay(5000).fadeOut();
+    $("#error").show();
+    await this.sleep(5000);
+    $("#error").hide();
+    this.error = new Error();
   }
 }

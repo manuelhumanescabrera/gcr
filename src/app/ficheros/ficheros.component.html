@@ -5,19 +5,22 @@
   <br>
   <div class="row">
     <div class="col-md-3 noPadding">
-      <button class="btn btn-success btn-block btn-md" (click)="procesarDevoluciones()" [disabled]="cargos.length==0">Procesar</button>
-    </div>
-    <div class="col-md-3 noPadding">
-      <button type="button" class="btn btn-warning btn-block btn-md" name="limpiar" (click)="limpiaDatos()" [disabled]="cargos.length==0">Limpiar</button>
-    </div>
-    <div class="col-md-3 noPadding">
       <div class="fileUpload btn btn-primary btn-block btn-md" (change)="cargaFichero($event)">
         <span>Subir fichero</span>
         <input type="file" class="upload" id="fichero" />
       </div>
     </div>
+    <div class="col-md-3 noPadding">
+      <button class="btn btn-success btn-block btn-md" (click)="procesarDevoluciones()" [disabled]="noDevoluciones">Procesar</button>
+    </div>
+    <div class="col-md-3 noPadding">
+      <button type="button" class="btn btn-warning btn-block btn-md" name="limpiar" (click)="limpiaDatos()" [disabled]="cargos.length==0">Limpiar</button>
+    </div>
+    <div class="col-md-3 noPadding">
+      <button type="button" class="btn btn-info btn-block btn-md" name="limpiar" (click)="exportaCsv()" [disabled]="cargos.length==0">Exporta a CSV</button>
+    </div>
   </div>
-  <br>
+  <hr>
   <div id="error" class="alert alert-danger" role="alert">{{error.message}}</div>
   <div id="exito" class="alert alert-success" role="alert">{{exito}}</div>
 </div>
