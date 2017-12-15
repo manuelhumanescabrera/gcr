@@ -18,7 +18,7 @@ export class ConfigComponent implements OnInit, DoCheck, ErrorHandler {
     private _route: ActivatedRoute,
     private _router: Router
   ) {
-    this.titulo = "Configuraciones";
+    this.titulo = "CONFIGURACIONES";
     this.config = new Config();
     this.error = new Error();
     this.exito = '';

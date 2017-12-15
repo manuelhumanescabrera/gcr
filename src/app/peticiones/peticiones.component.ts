@@ -250,7 +250,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
   async deleteAll() {
     let err:boolean = false;
     for (let pet of this.peticiones){
-      this._operaciones.deletePeticion(pet.id).subscribe(res => {
+      await this._operaciones.deletePeticion(pet.id).subscribe(res => {
         if (res.code == 200) {
           this.peticiones = new Array();
           this.getPeticiones();
@@ -260,7 +260,6 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       }, err => {
         err = true
       });
-      await this.sleep(1000);
       if(err){
         this.error = new Error('Ha habido problemas eliminando peticiones');
         this.handleError(this.error);
@@ -283,12 +282,12 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
    * @method generaRemesa
    * @return {[type]}     [description]
    */
-  generaRemesa() {
-    this._operaciones.generaRemesa(this.remesa).subscribe(res => {
+generaRemesa() {
+  this._operaciones.generaRemesa(this.remesa).subscribe(res => {
       if (res.code == 200) {
         this.inputDatosRem = false;
         this.remesa = new Remesa(null, '', '');
-        this.getPeticiones();
+        this.peticiones = new Array();
         this.handleExito(res.message);
       } else {
         this.error = new Error(res.message);
@@ -298,6 +297,7 @@ export class PeticionesComponent implements OnInit, ErrorHandler {
       this.error = err;
       this.handleError(err);
     });
+    //this.getPeticiones();
   }
   /**
    * Función que oculta el panel para completar los datos de la remesa

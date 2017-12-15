@@ -31,7 +31,7 @@ export class SociosComponent implements OnInit, ErrorHandler, DoCheck {
     private _router: Router,
     private _ng2Csv: Ng2CsvService
   ) {
-    this.titulo = 'USUARIOS DE LA COMUNIDAD';
+    this.titulo = 'GESTIÓN DE USUARIOS';
     this.nombres = new Array();
     this.nombresPaginados = new Array();
     this.nombresBack = new Array();
@@ -84,7 +84,7 @@ export class SociosComponent implements OnInit, ErrorHandler, DoCheck {
         this.nombresBack = this.nombres.slice(0);
         this.paginacion();
       }else{
-        this.error = new Error('No se encuentran nombres');
+        this.error = new Error(res.message);
         this.handleError(this.error);
       }
     }, err => {

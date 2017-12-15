@@ -83,9 +83,10 @@ export class SmsComponent implements OnInit, ErrorHandler {
    * @return {[type]}   [description]
    */
   leeFichero() {
+    this.limpiaDatos();
     if (this.tipoFichero == "text/csv") {
       var linea = [];
-      this.arraySms = [];
+      this.arraySms = new Array();
       linea = this.cadena.split("\n");
       var caracter = "\t";
       //cuento que caracter es más comun como separador
